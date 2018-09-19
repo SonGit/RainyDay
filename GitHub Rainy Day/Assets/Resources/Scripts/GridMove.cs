@@ -18,22 +18,16 @@ class GridMove : MonoBehaviour {
 	private float t;
 	private float factor;
 
-	public void Update() {
-		if (!isMoving) {
-			input = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-			if (!allowDiagonals) {
-				if (Mathf.Abs(input.x) > Mathf.Abs(input.y)) {
-					input.y = 0;
-				} else {
-					input.x = 0;
-				}
-			}
-
-			if (input != Vector2.zero) {
-				StartCoroutine(move(transform));
-			}
+	public Vector2 dir;
+	IEnumerator Start()
+	{
+		while (true) {
+			input = dir;
+			StartCoroutine(move(transform));
+			yield return new WaitForSeconds (2);
 		}
 	}
+
 
 	public IEnumerator move(Transform transform) {
 		isMoving = true;
