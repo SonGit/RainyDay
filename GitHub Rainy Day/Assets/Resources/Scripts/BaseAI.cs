@@ -12,7 +12,7 @@ public class BaseAI : MonoBehaviour {
 	void Start () {
 
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
 		
@@ -21,7 +21,7 @@ public class BaseAI : MonoBehaviour {
 	void OnMouseDown() {
 
 		//Fetch the Renderer from the GameObject
-
+		Selector.instance.Select(transform);
 
 	}
 
