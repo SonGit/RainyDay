@@ -17,8 +17,19 @@ public class GridMove : MonoBehaviour {
 	private Vector3 endPosition;
 	private float t;
 	private float factor;
+	public bool isBlocking;
 
 	public Vector2 dir;
+
+	void OnCollisionEnter(Collision collision)
+	{
+		if (collision.collider.gameObject.layer == LayerMask.NameToLayer ("AI")) 
+		{
+			dir = -dir;
+			isBlocking = true;
+		}
+	}
+
 	IEnumerator Start()
 	{
 		while (true) {
@@ -51,6 +62,10 @@ public class GridMove : MonoBehaviour {
 		while (t < 1f) {
 			t += Time.deltaTime * (moveSpeed/gridSize) * factor;
 			transform.position = Vector3.Lerp(startPosition, endPosition, t);
+			if(transform.position.x<0 || transform.position.x>7|| transform.position.z>0|| transform.position.z<-7)
+			{
+				Destroy (gameObject);
+			}
 			yield return null;
 		}
 
