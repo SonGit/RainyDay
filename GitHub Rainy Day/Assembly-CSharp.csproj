@@ -53,7 +53,31 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Grid.cs" />
+     <Compile Include="Assets\Packages\ToonBot\ToonBot(Free) Assets\Controller\RobotTestScriptFree.cs" />
+     <Compile Include="Assets\Resources\Scripts\BaseAI.cs" />
      <Compile Include="Assets\Resources\Scripts\GridMove.cs" />
+     <Compile Include="Assets\Resources\Scripts\Home.cs" />
+     <Compile Include="Assets\Resources\Scripts\Move.cs" />
+     <Compile Include="Assets\Resources\Scripts\Spawner.cs" />
+     <Compile Include="Assets\SwipeDetector\SwipeDetector.cs" />
+     <Compile Include="Assets\SwipeDetector\SwipeDrawer.cs" />
+     <Compile Include="Assets\SwipeDetector\SwipeLogger.cs" />
+     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface-Mobile.shader" />
+     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
+     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMPro_Properties.cginc" />
+     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
+     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile Masking.shader" />
+     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_Bitmap-Mobile.shader" />
+     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF Overlay.shader" />
+     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMPro_Surface.cginc" />
+     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile Overlay.shader" />
+     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_Bitmap.shader" />
+     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMPro.cginc" />
+     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF.shader" />
+     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile.shader" />
+     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_Sprite.shader" />
+     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface.shader" />
  <Reference Include="UnityEditor.StandardEvents">
  <HintPath>E:/GitHub Rainy Day/GitHub Rainy Day/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
  </Reference>
