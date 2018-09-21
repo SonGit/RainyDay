@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-class GridMove : MonoBehaviour {
+public class GridMove : MonoBehaviour {
 	public float moveSpeed = 3f;
 	public float gridSize = 1f;
 	private enum Orientation {
@@ -35,7 +35,7 @@ class GridMove : MonoBehaviour {
 		while (true) {
 			input = dir;
 			StartCoroutine(move(transform));
-			yield return new WaitForSeconds (2);
+			yield return new WaitForSeconds (1);
 		}
 	}
 
