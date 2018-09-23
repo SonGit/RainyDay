@@ -4,29 +4,37 @@ using UnityEngine;
 
 public class RGMovementController : MonoBehaviour {
 
-	public Transform mesh;
+	public enum RGDirection
+	{
+		UP,
+		DOWN,
+		LEFT,
+		RIGHT
+	}
 
-	public Vector3 currentTile;
+	[SerializeField]
+	private Transform mesh;
 
-	public float tileNo;
-
-	public float speed;
-
+	// Public movement vars
 	public float rotSpeed;
+	public float speed;
+	public RGDirection direction;
 
-	public bool isMoving;
-
-	public Vector3 targetTile;
-
-	bool changedDir;
+	// Private movement vars
+	private bool changedDir;
+	private Vector3 targetTile;
+	private Vector3 targetEulerAngle;
+	private float tileNo;
+	[SerializeField]
+	private Vector3 currentTile;
 
 	// Use this for initialization
 	void Start () {
-
-		isMoving = true;
 		targetTile = new Vector3 (Mathf.Round(transform.position.x),0,Mathf.Round(transform.position.z));
+		targetEulerAngle = new Vector3 (0,0,0);
+		tileNo = 1;
 	}
-	int dirType = 0;
+		
 	// Update is called once per frame
 	void Update () {
 		
@@ -36,28 +44,28 @@ public class RGMovementController : MonoBehaviour {
 			targetTile = currentTile + new Vector3 (0,0,tileNo);
 			changedDir = true;
 
-			dirType = 0;
+			direction = RGDirection.UP;
 		}
 
 		if (Input.GetKeyDown (KeyCode.S)) {
 			targetTile = currentTile + new Vector3 (0,0,-tileNo);
 			changedDir = true;
 		
-			dirType = 1;
+			direction = RGDirection.DOWN;
 		}
 
 		if (Input.GetKeyDown (KeyCode.A)) {
 			targetTile = currentTile + new Vector3 (-tileNo,0,0);
 			changedDir = true;
 
-			dirType = 2;
+			direction = RGDirection.LEFT;
 		}
 
 		if (Input.GetKeyDown (KeyCode.D)) {
 			targetTile = currentTile + new Vector3 (tileNo,0,0);
 			changedDir = true;
 		
-			dirType = 3;
+			direction = RGDirection.RIGHT;
 		}
 
 		if (changedDir) {
@@ -68,72 +76,41 @@ public class RGMovementController : MonoBehaviour {
 			} else {
 				transform.position = Vector3.MoveTowards (transform.position, targetTile, speed * Time.deltaTime);
 			}
+
 		} else {
-			if (dirType == 0) {
+			if (direction == RGDirection.UP) {
 				transform.position += new Vector3(0,0,1) * Time.deltaTime * speed;
 			}
-			if (dirType == 1) {
+			if (direction == RGDirection.DOWN) {
 				transform.position += new Vector3(0,0,-1) * Time.deltaTime * speed;
 			}
-			if (dirType == 2) {
+			if (direction == RGDirection.LEFT) {
 				transform.position += new Vector3(-1,0,0) * Time.deltaTime * speed;
 			}
-			if (dirType == 3) {
+			if (direction == RGDirection.RIGHT) {
 				transform.position += new Vector3(1,0,0) * Time.deltaTime * speed;
 			}
 		}
 			
-		if (dirType == 0) {
-			mesh.localEulerAngles = new Vector3 (0,0,0);
+		if (direction == RGDirection.UP) {
+			targetEulerAngle = new Vector3 (0,0,0);
 		}
-		if (dirType == 1) {
-			mesh.localEulerAngles = new Vector3 (0,180,0);
+		if (direction == RGDirection.DOWN) {
+			targetEulerAngle = new Vector3 (0,180,0);
 		}
-		if (dirType == 2) {
-			mesh.localEulerAngles = new Vector3 (0,-90,0);
+		if (direction == RGDirection.LEFT) {
+			targetEulerAngle = new Vector3 (0,-90,0);
 		}
-		if (dirType == 3) {
-			mesh.localEulerAngles = new Vector3 (0,90,0);
+		if (direction == RGDirection.RIGHT) {
+			targetEulerAngle = new Vector3 (0,90,0);
+		}
+
+		if (mesh != null)
+			mesh.localRotation = Quaternion.Slerp (mesh.localRotation, Quaternion.Euler (targetEulerAngle), Time.deltaTime * rotSpeed);
+		else {
+			Debug.Log ("No Mesh Founded!");
 		}
 
 	}
-
-	IEnumerator LookUp(int dir)
-	{
-		Quaternion targetRot = Quaternion.Euler( new Vector3 (0,0,0));
-
-		switch (dir)
-		{
-		case 0:
-			targetRot = Quaternion.Euler( new Vector3 (0,0,0));
-			break;
-		case 1:
-			targetRot = Quaternion.Euler( new Vector3 (0,-180,0));
-			break;
-		case 2:
-			targetRot = Quaternion.Euler( new Vector3 (0,-90,0));
-			break;
-		case 3:
-			targetRot = Quaternion.Euler( new Vector3 (0,90,0));
-			break;
-		default:
-			targetRot = Quaternion.Euler( new Vector3 (0,0,0));
-			break;
-		}
-
-		while (mesh.rotation != targetRot) {
-
-			mesh.rotation = Quaternion.RotateTowards(mesh.rotation, targetRot, rotSpeed * Time.deltaTime);
-			yield return new WaitForEndOfFrame ();
-		}
-
-		//isMoving = true;
-	}
-
-	public float MyRound(float value) {
-		if (value % 0.5f == 0)
-			return Mathf.Ceil(value);
-		else
-			return Mathf.Floor(value);
-	}
+		
 }
