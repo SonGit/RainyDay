@@ -32,7 +32,7 @@ namespace Lean.Pool
 				return;
 			}
 
-			LeanPoolTestOF.instance.DespawnPrefab (LeanPoolTestOF.instance.spawnedPawnPrefabs,audioSource.clip.length);
+			LeanPoolTestOF.instance.DespawnPrefab (LeanPoolTestOF.instance.spawnedRainGirlPrefabs,audioSource.clip.length);
 		}
 	}
 }

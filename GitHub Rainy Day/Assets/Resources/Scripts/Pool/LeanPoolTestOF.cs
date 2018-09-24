@@ -12,10 +12,10 @@ namespace Lean.Pool
 			instance = this;
 		}
 		[Tooltip("The prefab that will be used in the test")]
-		private GameObject pawnPrefab;
+		private GameObject RainGirl;
 		private GameObject EffectHit;
 		// This stores all spawned prefabs, so they can be despawned later
-		[HideInInspector] public Stack<GameObject> spawnedPawnPrefabs = new Stack<GameObject>();
+		[HideInInspector] public Stack<GameObject> spawnedRainGirlPrefabs = new Stack<GameObject>();
 //		[HideInInspector] public Stack<GameObject> spawnedSmokeEffect = new Stack<GameObject>();
 
 
@@ -23,7 +23,7 @@ namespace Lean.Pool
 		{
 			//pawnPrefab = ObjectFactory.instance.LinkPrefab (ObjectFactory.PrefabType.AudioSource);
 			//EffectHit = ObjectFactory.instance.LinkPrefab (ObjectFactory.PrefabType.EffectHit);
-			pawnPrefab = ObjectFactory.instance.LinkPrefab (ObjectFactory.PrefabType.PawnPrefab);
+			RainGirl = ObjectFactory.instance.LinkPrefab (ObjectFactory.PrefabType.RainGirl);
 		}
 
 		public GameObject SpawnPrefab(GameObject prefab, Stack<GameObject> stack, Vector3 position)
@@ -54,16 +54,16 @@ namespace Lean.Pool
 
 		public AudioSource_ GetAudioSource_(Vector3 pos)
 		{
-			return SpawnPrefab (pawnPrefab, spawnedPawnPrefabs, pos).GetComponent<AudioSource_>();
+			return SpawnPrefab (RainGirl, spawnedRainGirlPrefabs, pos).GetComponent<AudioSource_>();
 		}
 //		public EffectHit GetSmokeEffect(Vector3 pos)
 //		{
 //			return SpawnPrefab (EffectHit,spawnedSmokeEffect,pos).GetComponent<EffectHit>();
 //		}
 
-		public BaseAI GetPawnPrefab (Vector3 pos)
+		public BaseAI GetRainGirlPrefab (Vector3 pos)
 		{
-			return SpawnPrefab (pawnPrefab, spawnedPawnPrefabs, pos).GetComponent<BaseAI>();
+			return SpawnPrefab (RainGirl, spawnedRainGirlPrefabs, pos).GetComponent<BaseAI>();
 		}
 	}
 }

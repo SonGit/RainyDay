@@ -20,7 +20,7 @@ public class ObjectFactory: MonoBehaviour {
 		None,
 		AudioSource,
 		EffectHit,
-		PawnPrefab
+		RainGirl
 	}
 
 	public Dictionary<PrefabType,string> PrefabPaths = new Dictionary<PrefabType, string> {
@@ -28,7 +28,7 @@ public class ObjectFactory: MonoBehaviour {
 		{ PrefabType.None, "" },
 		{ PrefabType.AudioSource, "Prefabs/AudioSource" },
 		{ PrefabType.EffectHit, "Prefabs/EffectHit" },
-		{ PrefabType.PawnPrefab, "Prefabs/PawnPrefab" }
+		{ PrefabType.RainGirl, "Prefabs/RainGirl" }
     };
 
 	public GameObject LinkPrefab (PrefabType type)
