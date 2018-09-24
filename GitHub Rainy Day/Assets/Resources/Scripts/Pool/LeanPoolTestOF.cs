@@ -61,9 +61,6 @@ namespace Lean.Pool
 //			return SpawnPrefab (EffectHit,spawnedSmokeEffect,pos).GetComponent<EffectHit>();
 //		}
 
-		public BaseAI GetRainGirlPrefab (Vector3 pos)
-		{
-			return SpawnPrefab (RainGirl, spawnedRainGirlPrefabs, pos).GetComponent<BaseAI>();
-		}
+
 	}
 }
