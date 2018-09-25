@@ -12,6 +12,9 @@ public class AI : MonoBehaviour {
 		nextPos.y = Mathf.MoveTowards (nextPos.y, 0.15f, Time.deltaTime*2);
 		transform.position = nextPos;
 	}
+	void Hit() {
+	
+	}
 	void Start () {
 		nextPos = transform.position;
 	}
