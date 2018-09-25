@@ -10,13 +10,13 @@ public class Spawner : MonoBehaviour {
 
 		while (true) {
 
-//			Vector3 pos = new Vector3 (Random.Range(0,5),0,Random.Range(0,5));
-			Vector3 pos = new Vector3(0,0,0);
+			Vector3 pos = new Vector3 (Random.Range(0,5),1,Random.Range(0,5));
+//			Vector3 pos = new Vector3(0,3,0);
 			LeanPoolTestOF.instance.GetRainGirlPrefab (pos);
 
 			//SetColor ();
 
-			yield return new WaitForSeconds (Random.Range(10,30));
+			yield return new WaitForSeconds (Random.Range(1,2));
 		}
 
 	}

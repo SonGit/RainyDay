@@ -81,10 +81,8 @@ public class RGMovementController : MonoBehaviour {
 	private IEnumerator SetAnim()
 	{
 		head.enabled = false;
-		Debug.Log ("hit");
 		Anim_hit.SetBool ("isHit", true);
 		yield return new WaitForSeconds( 2.0f );
-		Debug.Log ("hit2");
 		isHit = false;
 		head.enabled = true;
 		Anim_hit.SetBool ("isHit", false);
@@ -92,10 +90,11 @@ public class RGMovementController : MonoBehaviour {
 	void Move () {
 		currentTile = new Vector3 (Mathf.Round (transform.position.x), 0, Mathf.Round (transform.position.z));
 
-		//		if(transform.position.x<-0.5f || transform.position.x>5.5f|| transform.position.z>5.5f|| transform.position.z<-0.5f)
-		//		{
-		//			LeanPoolTestOF.instance.DespawnPrefab (LeanPoolTestOF.instance.spawnedRainGirlPrefabs,0);
-		//		}
+				if(transform.position.x<-0.5f || transform.position.x>5.5f|| transform.position.z>5.5f|| transform.position.z<-0.5f)
+				{
+					//LeanPoolTestOF.instance.DespawnPrefab (LeanPoolTestOF.instance.spawnedRainGirlPrefabs,0);
+			Destroy(gameObject);
+				}
 
 		if (Input.GetKeyDown (KeyCode.W)) {
 			targetTile = currentTile + new Vector3 (0, 0, tileNo);

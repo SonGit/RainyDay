@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 114168995939194000}
   - component: {fileID: 54729575822060528}
   - component: {fileID: 135186765841977138}
+  - component: {fileID: 114860140433293662}
   m_Layer: 9
   m_Name: RainGirl
   m_TagString: AI
@@ -1131,7 +1132,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1004520455014366}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5, y: 0, z: 0}
+  m_LocalPosition: {x: 5, y: 0.146, z: 0}
   m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
   m_Children:
   - {fileID: 4366712860349046}
@@ -1343,6 +1344,19 @@ MonoBehaviour:
   direction: 0
   isHit: 0
   currentTile: {x: 0, y: 0, z: 0}
+--- !u!114 &114860140433293662
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1004520455014366}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4450a8e709905da40aab89b54b44175a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  trans: {fileID: 0}
+  nextPos: {x: 0, y: 0, z: 0}
 --- !u!135 &135186765841977138
 SphereCollider:
   m_ObjectHideFlags: 1
