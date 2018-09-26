@@ -89,16 +89,16 @@ public class AI : MonoBehaviour {
 
 		switch (movement.direction) {
 
-		case RGMovementController.RGDirection.UP:
+		case Direction.UP:
 			raycastDir = transform.forward;
 			break;
-		case RGMovementController.RGDirection.DOWN:
+		case Direction.DOWN:
 			raycastDir = -transform.forward;
 			break;
-		case RGMovementController.RGDirection.LEFT:
+		case Direction.LEFT:
 			raycastDir = -transform.right;
 			break;
-		case RGMovementController.RGDirection.RIGHT:
+		case Direction.RIGHT:
 			raycastDir = transform.right;
 			break;
 

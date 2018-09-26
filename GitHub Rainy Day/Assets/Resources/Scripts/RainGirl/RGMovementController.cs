@@ -2,15 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Lean.Pool;
+
+public enum Direction
+{
+	UP,
+	DOWN,
+	LEFT,
+	RIGHT
+}
+
 public class RGMovementController : MonoBehaviour {
 	public Animator Anim_hit;
-	public enum RGDirection
-	{
-		UP,
-		DOWN,
-		LEFT,
-		RIGHT
-	}
 
 	[SerializeField]
 	public Transform mesh;
@@ -18,7 +20,7 @@ public class RGMovementController : MonoBehaviour {
 	// Public movement vars
 	public float rotSpeed;
 	public float speed;
-	public RGDirection direction;
+	public Direction direction;
 
 	// Private movement vars
 	public bool changedDir;
@@ -32,32 +34,32 @@ public class RGMovementController : MonoBehaviour {
 
 	public void GoToRandDirection()
 	{
-		GoToDirection ((RGDirection)Random.Range(0,4));
+		GoToDirection ((Direction)Random.Range(0,4));
 	}
 
-	public void GoToDirection(RGDirection dir)
+	public void GoToDirection(Direction dir)
 	{
 		switch (dir) {
 
-		case RGDirection.UP:
+		case Direction.UP:
 			targetTile = currentTile + new Vector3 (0, 0, tileNo);
 			changedDir = true;
-			direction = RGDirection.UP;
+			direction = Direction.UP;
 			break;
-		case RGDirection.DOWN:
+		case Direction.DOWN:
 			targetTile = currentTile + new Vector3 (0, 0, -tileNo);
 			changedDir = true;
-			direction = RGDirection.DOWN;
+			direction = Direction.DOWN;
 			break;
-		case RGDirection.LEFT:
+		case Direction.LEFT:
 			targetTile = currentTile + new Vector3 (-tileNo, 0, 0);
 			changedDir = true;
-			direction = RGDirection.LEFT;
+			direction = Direction.LEFT;
 			break;
-		case RGDirection.RIGHT:
+		case Direction.RIGHT:
 			targetTile = currentTile + new Vector3 (tileNo, 0, 0);
 			changedDir = true;
-			direction = RGDirection.RIGHT;
+			direction = Direction.RIGHT;
 			break;
 		}
 
@@ -77,30 +79,30 @@ public class RGMovementController : MonoBehaviour {
 			}
 
 		} else {
-			if (direction == RGDirection.UP) {
+			if (direction == Direction.UP) {
 				transform.position += new Vector3 (0, 0, 1) * Time.deltaTime * speed;
 			}
-			if (direction == RGDirection.DOWN) {
+			if (direction == Direction.DOWN) {
 				transform.position += new Vector3 (0, 0, -1) * Time.deltaTime * speed;
 			}
-			if (direction == RGDirection.LEFT) {
+			if (direction == Direction.LEFT) {
 				transform.position += new Vector3 (-1, 0, 0) * Time.deltaTime * speed;
 			}
-			if (direction == RGDirection.RIGHT) {
+			if (direction == Direction.RIGHT) {
 				transform.position += new Vector3 (1, 0, 0) * Time.deltaTime * speed;
 			}
 		}
 
-		if (direction == RGDirection.UP) {
+		if (direction == Direction.UP) {
 			targetEulerAngle = new Vector3 (0, 0, 0);
 		}
-		if (direction == RGDirection.DOWN) {
+		if (direction == Direction.DOWN) {
 			targetEulerAngle = new Vector3 (0, 180, 0);
 		}
-		if (direction == RGDirection.LEFT) {
+		if (direction == Direction.LEFT) {
 			targetEulerAngle = new Vector3 (0, -90, 0);
 		}
-		if (direction == RGDirection.RIGHT) {
+		if (direction == Direction.RIGHT) {
 			targetEulerAngle = new Vector3 (0, 90, 0);
 		}
 
@@ -131,19 +133,19 @@ public class RGMovementController : MonoBehaviour {
 		if (isRun) {
 
 			if (Input.GetKeyDown (KeyCode.W)) {
-				GoToDirection (RGDirection.UP);
+				GoToDirection (Direction.UP);
 			}
 
 			if (Input.GetKeyDown (KeyCode.S)) {
-				GoToDirection (RGDirection.DOWN);
+				GoToDirection (Direction.DOWN);
 			}
 
 			if (Input.GetKeyDown (KeyCode.A)) {
-				GoToDirection (RGDirection.LEFT);
+				GoToDirection (Direction.LEFT);
 			}
 
 			if (Input.GetKeyDown (KeyCode.D)) {
-				GoToDirection (RGDirection.RIGHT);
+				GoToDirection (Direction.RIGHT);
 			}
 
 			Move ();
@@ -167,25 +169,25 @@ public class RGMovementController : MonoBehaviour {
 	{
 		switch (direction) {
 
-		case RGDirection.DOWN:
+		case Direction.DOWN:
 			targetTile = currentTile + new Vector3 (0, 0, tileNo);
 			changedDir = true;
-			direction = RGDirection.UP;
+			direction = Direction.UP;
 			break;
-		case RGDirection.UP:
+		case Direction.UP:
 			targetTile = currentTile + new Vector3 (0, 0, -tileNo);
 			changedDir = true;
-			direction = RGDirection.DOWN;
+			direction = Direction.DOWN;
 			break;
-		case RGDirection.RIGHT:
+		case Direction.RIGHT:
 			targetTile = currentTile + new Vector3 (-tileNo, 0, 0);
 			changedDir = true;
-			direction = RGDirection.LEFT;
+			direction = Direction.LEFT;
 			break;
-		case RGDirection.LEFT:
+		case Direction.LEFT:
 			targetTile = currentTile + new Vector3 (tileNo, 0, 0);
 			changedDir = true;
-			direction = RGDirection.RIGHT;
+			direction = Direction.RIGHT;
 			break;
 		}
 	}
