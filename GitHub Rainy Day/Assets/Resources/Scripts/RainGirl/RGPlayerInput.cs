@@ -12,6 +12,8 @@ public class RGPlayerInput : MonoBehaviour {
 
 	public Direction chosenDirection;
 
+
+
 	// Use this for initialization
 	void Start () {
 		dir = Vector3.zero;
@@ -25,6 +27,9 @@ public class RGPlayerInput : MonoBehaviour {
 
 	private Vector2 fromV2;
 	private Vector2 toV2;
+
+	[SerializeField]
+	private float minDistanceToChoose = 1;
 
 	bool mouseDown;
 	bool chosen;
@@ -71,47 +76,51 @@ public class RGPlayerInput : MonoBehaviour {
 			// Make it so that its only in x and y axis
 			dir.y = 0; // No vertical movement
 
+			if (Vector3.Distance (transform.position, hit.point) > minDistanceToChoose) {
+
+				Debug.DrawLine (transform.position,transform.position + transform.forward * 2,Color.green);
+				Debug.DrawLine (transform.position,transform.position + dir * 2,Color.green);
+
+				//Vector3 mousePos = transform.position + dir * 9999;
+
+				fromV3 = (transform.position + transform.forward * 2) - transform.position;
+				toV3 = (transform.position + dir * 2) - transform.position;
+
+				fromV2 = new Vector2 (fromV3.x,fromV3.z);
+				toV2 = new Vector2 (toV3.x,toV3.z);
+
+				float angle = (Mathf.Abs( 360 - Angle360(fromV2,toV2)));
+				//float angle = ( Angle360(A2,B2));
+				//print (angle);
+
+				if (  (angle > 315 && angle <= 360) || (angle > 0 && angle < 45)) {
+					//print ("UP");
+					chosenDirection = Direction.UP;
+				}
+
+				if( (angle > 45) && (angle < 135))
+				{
+					//print ("RIGHT");
+					chosenDirection = (Direction.RIGHT);
+				}
+
+				if( (angle > 135) && (angle < 225))
+				{
+					//print ("DOWN");
+					chosenDirection = (Direction.DOWN);
+				}
+
+				if( (angle > 225) && (angle < 315))
+				{
+					//print ("LEFT");
+					chosenDirection = (Direction.LEFT);
+				}
+
+				TurnOnArrow(chosenDirection);
+			}
+				
 		}
 
-		Debug.DrawLine (transform.position,transform.position + transform.forward * 2,Color.green);
-		Debug.DrawLine (transform.position,transform.position + dir * 2,Color.green);
-
-		//Vector3 mousePos = transform.position + dir * 9999;
-
-		fromV3 = (transform.position + transform.forward * 2) - transform.position;
-		toV3 = (transform.position + dir * 2) - transform.position;
-
-		fromV2 = new Vector2 (fromV3.x,fromV3.z);
-		toV2 = new Vector2 (toV3.x,toV3.z);
-	
-		float angle = (Mathf.Abs( 360 - Angle360(fromV2,toV2)));
-		//float angle = ( Angle360(A2,B2));
-		//print (angle);
-
-		if (  (angle > 315 && angle <= 360) || (angle > 0 && angle < 45)) {
-			//print ("UP");
-			chosenDirection = Direction.UP;
-		}
-
-		if( (angle > 45) && (angle < 135))
-		{
-			//print ("RIGHT");
-			chosenDirection = (Direction.RIGHT);
-		}
-
-		if( (angle > 135) && (angle < 225))
-		{
-			//print ("DOWN");
-			chosenDirection = (Direction.DOWN);
-		}
-
-		if( (angle > 225) && (angle < 315))
-		{
-			//print ("LEFT");
-			chosenDirection = (Direction.LEFT);
-		}
-
-		TurnOnArrow(chosenDirection);
 	}
 
 	void OnMouseDown()
