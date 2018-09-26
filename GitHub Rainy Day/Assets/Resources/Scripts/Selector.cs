@@ -1,11 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using TMPro;
 public class Selector : MonoBehaviour {
 
 	public static Selector instance;
-
+	public TextMeshPro DebugT;
 	void Awake()
 	{
 		instance = this;
@@ -21,32 +21,37 @@ public class Selector : MonoBehaviour {
 		if (target != null) {
 			transform.position = target.position + new Vector3 (0, 2, 0);
 
-			if (gridMove != null) {
-				if (Input.GetKeyDown (KeyCode.D)) {
-					gridMove.dir = new Vector2 (1,0);
+
+			if (controler != null) {
+				if (SwipeManager.IsSwipingUp()) {
+					controler.GoToDirection (RGMovementController.RGDirection.UP);
+					DebugT.text = "select";
 				}
-				if (Input.GetKeyDown (KeyCode.A)) {
-					gridMove.dir = new Vector2 (-1,0);
+				if (SwipeManager.IsSwipingDown()) {
+					controler.GoToDirection (RGMovementController.RGDirection.DOWN);
+					DebugT.text = "select";
 				}
-				if (Input.GetKeyDown (KeyCode.W)) {
-					gridMove.dir = new Vector2 (0,1);
+				if (SwipeManager.IsSwipingLeft()) {
+					controler.GoToDirection (RGMovementController.RGDirection.LEFT);
+					DebugT.text = "select";
 				}
-				if (Input.GetKeyDown (KeyCode.S)) {
-					gridMove.dir = new Vector2 (0,-1);
+				if (SwipeManager.IsSwipingRight()) {
+					controler.GoToDirection (RGMovementController.RGDirection.RIGHT);
+				DebugT.text = "select";
 				}
 			}
 
 		} else {
 			transform.position = Vector3.one * 999;
-			gridMove = null;
+			controler = null;
 		}
 
 	}
 	Transform target;
-	public GridMove gridMove;
+	public RGMovementController controler;
 	public void Select(Transform _target)
 	{
 		target = _target;
-		gridMove = _target.GetComponent<GridMove> ();
+		controler = _target.GetComponent<RGMovementController> ();
 	}
 }
