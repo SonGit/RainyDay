@@ -4,16 +4,19 @@ using UnityEngine;
 using Lean.Pool;
 
 public class Spawner : MonoBehaviour {
+	
 	public Color _currentColor;
+	public GameObject AI;
+
 	// Use this for initialization
 	IEnumerator Start () {
 
 		while (true) {
 
-			Vector3 pos = new Vector3 (Random.Range(0,5),1,Random.Range(0,5));
+			Vector3 pos = new Vector3 (Random.Range(0,5),5,Random.Range(0,5));
 //			Vector3 pos = new Vector3(0,3,0);
-			LeanPoolTestOF.instance.GetRainGirlPrefab (pos);
-
+		//	LeanPoolTestOF.instance.GetRainGirlPrefab (pos);
+			Instantiate(AI,pos,Quaternion.identity);
 			//SetColor ();
 
 			yield return new WaitForSeconds (Random.Range(1,2));
