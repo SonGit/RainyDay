@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Lean.Pool;
 public class RGMovementController : MonoBehaviour {
-	
 	public Animator Anim_hit;
 	public enum RGDirection
 	{
@@ -30,11 +29,6 @@ public class RGMovementController : MonoBehaviour {
 
 	[SerializeField]
 	private Vector3 currentTile;
-
-	// Use this for initialization
-	void OnEnable() {
-
-	}
 
 	public void GoToRandDirection()
 	{
@@ -110,16 +104,26 @@ public class RGMovementController : MonoBehaviour {
 			targetEulerAngle = new Vector3 (0, 90, 0);
 		}
 
+		if (mesh.localRotation != Quaternion.Euler (targetEulerAngle)) {
+			isRotated = false;
+		} else {
+			isRotated = true;
+		}
+
 		if (mesh != null)
 			mesh.localRotation = Quaternion.Slerp (mesh.localRotation, Quaternion.Euler (targetEulerAngle), Time.deltaTime * rotSpeed);
 		else {
 			Debug.Log ("No Mesh Founded!");
 		}
 	}
+
+	public bool isRotated;
+
 	void Start () {
 		targetTile = new Vector3 (Mathf.Round(transform.position.x),0,Mathf.Round(transform.position.z));
 		targetEulerAngle = new Vector3 (0,0,0);
 		tileNo = 1;
+		currentTile = new Vector3 (Mathf.Round (transform.position.x), 0, Mathf.Round (transform.position.z));
 	}
 	// Update is called once per frame
 	void Update () {
@@ -132,7 +136,6 @@ public class RGMovementController : MonoBehaviour {
 
 			if (Input.GetKeyDown (KeyCode.S)) {
 				GoToDirection (RGDirection.DOWN);
-
 			}
 
 			if (Input.GetKeyDown (KeyCode.A)) {
@@ -145,10 +148,7 @@ public class RGMovementController : MonoBehaviour {
 
 			Move ();
 		}
-		if(transform.position.x<-0.5f || transform.position.x>5.5f|| transform.position.z>5.5f|| transform.position.z<-0.5f)
-		{
-			Destroy(gameObject);
-		}
+	
 	}
 		
 	private bool isRun ;

@@ -16,7 +16,10 @@ public class Spawner : MonoBehaviour {
 			Vector3 pos = new Vector3 (Random.Range(0,5),5,Random.Range(0,5));
 //			Vector3 pos = new Vector3(0,3,0);
 		//	LeanPoolTestOF.instance.GetRainGirlPrefab (pos);
-			Instantiate(AI,pos,Quaternion.identity);
+			GameObject ai = (GameObject)Instantiate(AI,pos,Quaternion.identity);
+
+			AI a = ai.GetComponent<AI> ();
+			a.movement.GoToRandDirection ();
 			//SetColor ();
 
 			yield return new WaitForSeconds (Random.Range(1,2));

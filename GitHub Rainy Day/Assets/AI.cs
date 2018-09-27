@@ -2,55 +2,37 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using UnityEngine.AI;
 
 public class AI : MonoBehaviour {
 
 	public float hitTime = 3;
 	public float hitTimeCount;
-	public int rand;
+
 	// Use this for initialization
 	public RGMovementController movement;
 
 	public TextMeshPro debugText;
-	public bool isAuto;
-
 
 	Collider collider;
-	Color meshColor;
 
 	public enum RGState
 	{
 		WALK,
 		HIT,
-		START,
-		AUTO
-	}
-
-	public enum MeshColor
-	{
-		Red,
-		Blue,
-		Green
+		START
 	}
 
 	public RGState currentState;
-	void OnMouseDown() {
 
-		//Fetch the Renderer from the GameObject
-		Selector.instance.Select(transform);
+	bool delayedCollider;
 
-	}
+	float delayedColliderTimeCount;
+
 	void Start () {
 
 		collider = this.GetComponent<Collider> ();
 
-		movement.GoToRandDirection ();
-
 		currentState = RGState.START;
-		ChangeColor ();
-
-
 	}
 	
 	// Update is called once per frame
@@ -63,46 +45,119 @@ public class AI : MonoBehaviour {
 				
 				hitTimeCount = 0;
 
+				delayedCollider = true;
+
 				WalkBack ();
 
+				RaycastForward ();
 			}
+		}
+
+		if (delayedCollider) {
+
+			delayedColliderTimeCount += Time.deltaTime;
+
+			if (delayedColliderTimeCount > .5f) {
+
+				delayedColliderTimeCount = 0;
+
+				delayedCollider = false;
+
+			}
+
 		}
 
 		if (currentState == RGState.START) {
 			
 			debugText.text = "Falling!";
 
-			if (transform.position.y > 0.3f) {
-				transform.position += new Vector3 (0, -1 * Time.deltaTime, 0);
-				collider.enabled = false;
+			if (transform.position.y > 0) {
+				transform.position += new Vector3 (0, -3 * Time.deltaTime, 0);
 			} else {
 				Walk ();
-				collider.enabled = true;
 			}
 		}
 			
+		RaycastForward ();
 	}
 
+	public bool raycasting = true;
 
-	void OnCollisionEnter(Collision collision)
+	bool RaycastForward()
 	{
-		if (collision.gameObject.tag == "AI") {
-			debugText.text = "Hit!";
-			OnHit ();
+		Vector3 raycastDir = Vector3.zero;
+
+		switch (movement.direction) {
+
+		case RGMovementController.RGDirection.UP:
+			raycastDir = transform.forward;
+			break;
+		case RGMovementController.RGDirection.DOWN:
+			raycastDir = -transform.forward;
+			break;
+		case RGMovementController.RGDirection.LEFT:
+			raycastDir = -transform.right;
+			break;
+		case RGMovementController.RGDirection.RIGHT:
+			raycastDir = transform.right;
+			break;
+
 		}
+	
+		Debug.DrawRay (transform.position + new Vector3 (0, 1, 0), raycastDir * 9999, Color.red);
+
+		RaycastHit hit;
+
+		// Does the ray intersect any objects excluding the player layer
+		if (Physics.Raycast(transform.position + new Vector3(0,1,0), raycastDir, out hit, Mathf.Infinity))
+		{
+//			Debug.Log(transform.name + " Did Hit " + hit.transform.name + " hit.distance " + hit.distance);
+			float distanceToHit = Vector3.Distance (transform.position,hit.transform.position);
+
+			if (hit.distance < 0.17f) {
+				OnHit ();
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+
+	bool specialCase;
+	float specialCaseTimeCount;
+	void OnCollisionStay(Collision collision)
+	{
+		//if (collision.gameObject.tag == "AI") {
+
+			//hitTime += Random.Range (0,100)/100;
+			//print (collision.gameObject.name);
+
+			//AI hitAI = collision.gameObject.GetComponent<AI> ();
+
+			//if (hitAI != null) {
+			//	OnHit ();
+			//}
+		
+		//}
 	}
 
 	void OnHit()
 	{
+
 		if (currentState != RGState.HIT)
 			currentState = RGState.HIT;
-		else {
+		else 
+		{
 			return;
 		}
-		
+
 		movement.Stop ();
 
+		debugText.text = "Hit!";
+
 		ResetTimer ();
+
 	}
 
 	void ResetTimer()
@@ -124,21 +179,7 @@ public class AI : MonoBehaviour {
 		currentState = RGState.WALK;
 		movement.Run ();
 	}
-	void ChangeColor()
-	{
-		rand = Random.Range (0, 3);
-		SkinnedMeshRenderer rend = GetComponentInChildren<SkinnedMeshRenderer> ();
 
-		if (rand == 0) {
-			meshColor = new Color32 (109, 18, 0, 255);
-		}
-		if (rand == 1) {
-			meshColor = new Color32 (0, 117, 181, 255);
-		}
-		if (rand == 2) {
-			meshColor = new Color32 (9, 135, 0, 255);
-		}
-		rend.materials[0].color = meshColor;
-	}
 
+		
 }
