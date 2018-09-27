@@ -28,11 +28,17 @@ public class AI : MonoBehaviour {
 
 	float delayedColliderTimeCount;
 
+	public Arrow[] arrows;
+
 	void Start () {
+
+		arrows = this.GetComponentsInChildren<Arrow> ();
 
 		collider = this.GetComponent<Collider> ();
 
 		currentState = RGState.START;
+
+		TurnOffAllArrow ();
 	}
 	
 	// Update is called once per frame
@@ -180,6 +186,23 @@ public class AI : MonoBehaviour {
 		movement.Run ();
 	}
 
+	public void TurnOffAllArrow()
+	{
+		foreach (Arrow arrow in arrows) {
+
+			arrow.gameObject.SetActive (false);
+
+		}
+	}
+
+	public void TurnOnArrow(Direction direction)
+	{
+		foreach (Arrow arrow in arrows) {
+
+			arrow.gameObject.SetActive (arrow.direction == direction);
+
+		}
+	}
 
 		
 }
