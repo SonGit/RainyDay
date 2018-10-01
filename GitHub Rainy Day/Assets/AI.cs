@@ -30,6 +30,8 @@ public class AI : MonoBehaviour {
 
 	public Arrow[] arrows;
 
+	int layer_mask;
+
 	void Start () {
 
 		arrows = this.GetComponentsInChildren<Arrow> ();
@@ -39,6 +41,8 @@ public class AI : MonoBehaviour {
 		currentState = RGState.START;
 
 		TurnOffAllArrow ();
+
+		layer_mask = LayerMask.GetMask("Fence","AI");
 	}
 	
 	// Update is called once per frame
@@ -115,13 +119,21 @@ public class AI : MonoBehaviour {
 		RaycastHit hit;
 
 		// Does the ray intersect any objects excluding the player layer
-		if (Physics.Raycast(transform.position + new Vector3(0,1,0), raycastDir, out hit, Mathf.Infinity))
+		if (Physics.Raycast(transform.position + new Vector3(0,1,0), raycastDir, out hit, Mathf.Infinity,layer_mask))
 		{
 //			Debug.Log(transform.name + " Did Hit " + hit.transform.name + " hit.distance " + hit.distance);
+
 			float distanceToHit = Vector3.Distance (transform.position,hit.transform.position);
 
 			if (hit.distance < 0.17f) {
+				
 				OnHit ();
+				//Check if hit fence
+				Fence fence = hit.transform.GetComponent<Fence>();
+				// If hit fence, push it down
+				if (fence != null) {
+					fence.PopDown ();
+				}
 			}
 
 			return true;

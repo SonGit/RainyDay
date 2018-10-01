@@ -57,6 +57,9 @@ public class RGPlayerInput : MonoBehaviour {
 				chosenAI = hit.transform.GetComponent<AI> ();
 
 				if (chosenAI != null) {
+					// If the AI is playing hit animation, ignore
+					if (chosenAI.currentState == AI.RGState.HIT)
+						return;
 					// set default direction
 					chosenAI.TurnOnArrow (chosenAI.movement.direction);
 					chosenDirection = chosenAI.movement.direction;
@@ -80,6 +83,10 @@ public class RGPlayerInput : MonoBehaviour {
 							chosenAI = closest.GetComponent<AI> ();
 
 							if (chosenAI != null) {
+								
+								// If the AI is playing hit animation, ignore
+								if (chosenAI.currentState == AI.RGState.HIT)
+									return;
 								// set default direction
 								chosenAI.TurnOnArrow(chosenAI.movement.direction);
 								chosenDirection = chosenAI.movement.direction;

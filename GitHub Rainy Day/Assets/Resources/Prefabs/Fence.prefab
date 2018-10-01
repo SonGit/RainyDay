@@ -21,7 +21,9 @@ GameObject:
   - component: {fileID: 4374530946998450}
   - component: {fileID: 33343852637578288}
   - component: {fileID: 23370129820535638}
-  m_Layer: 0
+  - component: {fileID: 114732754569487262}
+  - component: {fileID: 65948488136943758}
+  m_Layer: 11
   m_Name: Fence
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -34,8 +36,8 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1965383445574796}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 5, y: 0.65, z: 5.5}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.094816715, y: -0.9480462, z: 0.5374212}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -82,4 +84,28 @@ MeshFilter:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1965383445574796}
-  m_Mesh: {fileID: 4300000, guid: 91cfe93dbea51d0498e11c0518074fda, type: 3}
+  m_Mesh: {fileID: 4300000, guid: 24503429aac44e84ea4e4bb842a25d60, type: 3}
+--- !u!65 &65948488136943758
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1965383445574796}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 0.07008973}
+  m_Center: {x: 0, y: 0.53, z: 0.000000014901161}
+--- !u!114 &114732754569487262
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1965383445574796}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f74b1a86b38b6634383973fe02ecb109, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  popTime: 1
