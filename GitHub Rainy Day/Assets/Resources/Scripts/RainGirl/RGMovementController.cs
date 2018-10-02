@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Lean.Pool;
+using Pathfinding;
 
 public enum Direction
 {
@@ -28,6 +29,14 @@ public class RGMovementController : MonoBehaviour {
 	private Vector3 targetEulerAngle;
 	private float tileNo;
 	private int startDir;
+
+
+	// Pathfinding stuffs
+	private Seeker seeker;
+	Vector3 currentWaypoint;
+	int currentWaypointNo;
+	Path path;
+	public bool pathfinding;
 
 	[SerializeField]
 	private Vector3 currentTile;
@@ -112,8 +121,12 @@ public class RGMovementController : MonoBehaviour {
 			isRotated = true;
 		}
 
-		if (mesh != null)
+
+		if (mesh != null) {
 			mesh.localRotation = Quaternion.Slerp (mesh.localRotation, Quaternion.Euler (targetEulerAngle), Time.deltaTime * rotSpeed);
+			print ("targetEulerAngle " + targetEulerAngle);
+		}
+
 		else {
 			Debug.Log ("No Mesh Founded!");
 		}
@@ -126,29 +139,57 @@ public class RGMovementController : MonoBehaviour {
 		targetEulerAngle = new Vector3 (0,0,0);
 		tileNo = 1;
 		currentTile = new Vector3 (Mathf.Round (transform.position.x), 0, Mathf.Round (transform.position.z));
+		seeker = this.GetComponent<Seeker> ();
+		FollowPath ();
 	}
 	// Update is called once per frame
 	void Update () {
 
 		if (isRun) {
 
-			if (Input.GetKeyDown (KeyCode.W)) {
-				GoToDirection (Direction.UP);
+			if (!pathfinding) {
+				Move ();
+			} else {
+				if (Vector3.Distance (transform.position, currentWaypoint) > 0.01f) {
+					
+					transform.position = Vector3.MoveTowards (transform.position, currentWaypoint, Time.deltaTime * speed);
+
+					Vector3 dir = (currentWaypoint - transform.position).normalized;
+					dir = new Vector3 (Mathf.Round (dir.x), 0, Mathf.Round (dir.z));
+
+					if (dir.z > 0 ) {
+						direction = Direction.UP;
+					}
+
+					if (dir.z < 0 ) {
+						direction = Direction.DOWN;
+					}
+
+					if (dir.x < 0 ) {
+						direction = Direction.LEFT;
+					}
+
+					if (dir.x > 0 ) {
+						direction = Direction.RIGHT;
+					}
+
+					var rotation = Quaternion.LookRotation(currentWaypoint - transform.position);
+					mesh.localRotation = Quaternion.Slerp(mesh.localRotation, rotation, Time.deltaTime * rotSpeed);
+
+				} else {
+
+					currentWaypointNo++;
+
+					if (currentWaypointNo >= path.vectorPath.Count) {
+						//pathfinding = false;
+					} else {
+						currentWaypoint = path.vectorPath[currentWaypointNo];
+					}
+
+				}
 			}
 
-			if (Input.GetKeyDown (KeyCode.S)) {
-				GoToDirection (Direction.DOWN);
-			}
-
-			if (Input.GetKeyDown (KeyCode.A)) {
-				GoToDirection (Direction.LEFT);
-			}
-
-			if (Input.GetKeyDown (KeyCode.D)) {
-				GoToDirection (Direction.RIGHT);
-			}
-
-			Move ();
+		
 		}
 	
 	}
@@ -190,5 +231,26 @@ public class RGMovementController : MonoBehaviour {
 			direction = Direction.RIGHT;
 			break;
 		}
+	}
+
+	public Transform target;
+
+	public void FollowPath()
+	{
+		seeker.StartPath(transform.position, target.position, OnPathComplete);
+	}
+
+	private void OnPathComplete (Path p) {
+		Debug.Log("Yay, we got a path back. Did it have an error? " + p.error);
+
+		if (!p.error) {
+			path = p;
+			currentWaypoint = transform.position;
+			currentWaypointNo = 0;
+			pathfinding = true;
+		} else {
+			Debug.Log ("No Path!");
+		}
+
 	}
 }

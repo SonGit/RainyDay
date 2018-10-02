@@ -18,6 +18,7 @@ public class AI : MonoBehaviour {
 	public enum RGState
 	{
 		WALK,
+		WAIT,
 		HIT,
 		START
 	}
@@ -26,7 +27,7 @@ public class AI : MonoBehaviour {
 
 	bool delayedCollider;
 
-	float delayedColliderTimeCount;
+	float waitTimeCount;
 
 	public Arrow[] arrows;
 
@@ -63,18 +64,14 @@ public class AI : MonoBehaviour {
 			}
 		}
 
-		if (delayedCollider) {
+		if (currentState == RGState.WAIT) {
+			waitTimeCount += Time.deltaTime;
 
-			delayedColliderTimeCount += Time.deltaTime;
+			if (waitTimeCount > .5f) {
 
-			if (delayedColliderTimeCount > .5f) {
-
-				delayedColliderTimeCount = 0;
-
-				delayedCollider = false;
-
+				StopWait ();
+				waitTimeCount = 0;
 			}
-
 		}
 
 		if (currentState == RGState.START) {
@@ -126,8 +123,16 @@ public class AI : MonoBehaviour {
 			float distanceToHit = Vector3.Distance (transform.position,hit.transform.position);
 
 			if (hit.distance < 0.17f) {
-				
-				OnHit ();
+
+				// if the AI is not follow any path, play normal hit
+				if (!movement.pathfinding) {
+					OnHit ();
+				}
+				// else, just wait
+				else {
+					Wait ();
+				}
+
 				//Check if hit fence
 				Fence fence = hit.transform.GetComponent<Fence>();
 				// If hit fence, push it down
@@ -142,22 +147,19 @@ public class AI : MonoBehaviour {
 		return false;
 	}
 
-	bool specialCase;
-	float specialCaseTimeCount;
-	void OnCollisionStay(Collision collision)
+	void Wait()
 	{
-		//if (collision.gameObject.tag == "AI") {
+		currentState = RGState.WAIT;
+		movement.Stop ();
+		debugText.text = "Wait!";
+		ResetTimer ();
+	}
 
-			//hitTime += Random.Range (0,100)/100;
-			//print (collision.gameObject.name);
-
-			//AI hitAI = collision.gameObject.GetComponent<AI> ();
-
-			//if (hitAI != null) {
-			//	OnHit ();
-			//}
-		
-		//}
+	void StopWait()
+	{
+		currentState = RGState.WALK;
+		movement.Run ();
+		debugText.text = "Walk!";
 	}
 
 	void OnHit()
@@ -181,6 +183,7 @@ public class AI : MonoBehaviour {
 	void ResetTimer()
 	{
 		hitTimeCount = 0;
+		waitTimeCount = 0;
 	}
 
 	void WalkBack()

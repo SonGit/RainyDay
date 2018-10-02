@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 114074486615678406}
   - component: {fileID: 54804904025103228}
   - component: {fileID: 65006869000271182}
-  - component: {fileID: 114504937440042808}
+  - component: {fileID: 114156602016983304}
   m_Layer: 9
   m_Name: RainGirl
   m_TagString: AI
@@ -1014,7 +1014,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1377429185536926}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.72, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4482833036535880}
@@ -1304,7 +1304,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1004520455014366}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3, y: 1.108, z: 1}
+  m_LocalPosition: {x: 1, y: 0, z: 1}
   m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
   m_Children:
   - {fileID: 4366712860349046}
@@ -1534,7 +1534,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.54, y: 3.41, z: 0.87}
+  m_Size: {x: 0.54, y: 2.01, z: 0.87}
   m_Center: {x: 0, y: 1.2, z: 0}
 --- !u!95 &95368415903930590
 Animator:
@@ -1570,6 +1570,7 @@ MonoBehaviour:
   movement: {fileID: 114074486615678406}
   debugText: {fileID: 114799281276858100}
   currentState: 2
+  arrows: []
   raycasting: 1
 --- !u!114 &114074486615678406
 MonoBehaviour:
@@ -1585,11 +1586,39 @@ MonoBehaviour:
   Anim_hit: {fileID: 95368415903930590}
   mesh: {fileID: 4366712860349046}
   rotSpeed: 5
-  speed: 0.5
+  speed: 1
   direction: 0
   changedDir: 0
+  pathfinding: 0
   currentTile: {x: 0, y: 0, z: 0}
   isRotated: 0
+  target: {fileID: 0}
+--- !u!114 &114156602016983304
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1004520455014366}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 373b52eb9bf8c40f785bb6947a1aee66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 1
+  drawGizmos: 1
+  detailedGizmos: 0
+  startEndModifier:
+    addPoints: 0
+    exactStartPoint: 3
+    exactEndPoint: 3
+    useRaycasting: 0
+    mask:
+      serializedVersion: 2
+      m_Bits: 4294967295
+    useGraphRaycasting: 0
+  traversableTags: -1
+  tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  graphMask: -1
 --- !u!114 &114192312619724832
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1614,21 +1643,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   direction: 1
---- !u!114 &114504937440042808
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1004520455014366}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6188c40134e147a44bb4a8f8c311806b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ai: {fileID: 114013296480232222}
-  dir: {x: 0, y: 0, z: 0}
-  arrows: []
-  chosenDirection: 0
 --- !u!114 &114626693761066632
 MonoBehaviour:
   m_ObjectHideFlags: 1
