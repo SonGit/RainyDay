@@ -3,6 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
+public enum GirlType
+{
+	RED,
+	BLUE,
+	YELLOW,
+}
 public class AI : MonoBehaviour {
 
 	public float hitTime = 3;
@@ -13,7 +19,6 @@ public class AI : MonoBehaviour {
 
 	public TextMeshPro debugText;
 
-	Collider collider;
 
 	public enum RGState
 	{
@@ -25,8 +30,6 @@ public class AI : MonoBehaviour {
 
 	public RGState currentState;
 
-	bool delayedCollider;
-
 	float waitTimeCount;
 
 	public Arrow[] arrows;
@@ -36,8 +39,6 @@ public class AI : MonoBehaviour {
 	void Start () {
 
 		arrows = this.GetComponentsInChildren<Arrow> ();
-
-		collider = this.GetComponent<Collider> ();
 
 		currentState = RGState.START;
 
@@ -55,8 +56,6 @@ public class AI : MonoBehaviour {
 			if (hitTimeCount > hitTime) {
 				
 				hitTimeCount = 0;
-
-				delayedCollider = true;
 
 				WalkBack ();
 
@@ -114,7 +113,7 @@ public class AI : MonoBehaviour {
 		Debug.DrawRay (transform.position + new Vector3 (0, 1, 0), raycastDir * 9999, Color.red);
 
 		RaycastHit hit;
-
+	
 		// Does the ray intersect any objects excluding the player layer
 		if (Physics.Raycast(transform.position + new Vector3(0,1,0), raycastDir, out hit, Mathf.Infinity,layer_mask))
 		{
@@ -138,6 +137,7 @@ public class AI : MonoBehaviour {
 				// If hit fence, push it down
 				if (fence != null) {
 					fence.PopDown ();
+					fence.isPopDown = true;
 				}
 			}
 
@@ -218,6 +218,4 @@ public class AI : MonoBehaviour {
 
 		}
 	}
-
-		
 }

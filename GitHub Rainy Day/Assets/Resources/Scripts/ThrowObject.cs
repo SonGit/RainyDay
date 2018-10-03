@@ -5,9 +5,13 @@ using UnityEngine;
 public class ThrowObject : MonoBehaviour {
 
     private Rigidbody rb;
-
+	private Rigidbody rb1;
 	public Vector3 target;
-
+	public Vector3 nextPos;
+	public Vector3 left;
+	public Vector3 right;
+	public int rand;
+	public float speed;
     public float h = 25;
     public float gravity = -18;
 
@@ -15,23 +19,102 @@ public class ThrowObject : MonoBehaviour {
 
 	public bool hasInit;
 
+	void OnCollisionEnter(Collision collision)
+	{
+		//print (collision.gameObject.name);
+	}
+	public IEnumerator MoveToStart(){
+		rand = Random.Range (1, 9);
+		if (rand < 5) {
+			transform.eulerAngles = new Vector3 (0, 90, 0);
+		}else transform.eulerAngles = new Vector3 (0,-90,0);
 
-	IEnumerator Start()
-    {
-		while (true) {
-			if (transform.position.x >= 3) {
-				target = new Vector3 (0, 1, 1);
+		switch (rand) {
+		case 1:
+			transform.position = left;
+			break;
+		case 2:
+			transform.position = left + new Vector3 (0, 0, 1);
+			break;
+		case 3:
+			transform.position = left + new Vector3 (0, 0, 3);
+			break;
+		case 4:
+			transform.position = left + new Vector3 (0, 0, 5);
+			break;
+		case 5:
+			transform.position = right;
+			break;
+		case 6:
+			transform.position = right + new Vector3 (0, 0, 1);
+			break;
+		case 7:
+			transform.position = right + new Vector3 (0, 0, 3);
+			break;
+		case 8:
+			transform.position = right + new Vector3 (0, 0, 5);
+			break;
+		}
+		yield return null;
+	}
+	public IEnumerator Ready() {
+		if (rand < 5) {
+			while (transform.position.x < -2) {
+				transform.position = Vector3.MoveTowards (transform.position, new Vector3 (-2, -0.5f, transform.position.z), Time.deltaTime * speed);
+				yield return null;
 			}
-			if (transform.position.y > 0.5f) {
-				h = 0.5f;
+		} else {
+			while (transform.position.x > 7) {
+				transform.position = Vector3.MoveTowards (transform.position, new Vector3 (7, -0.5f, transform.position.z), Time.deltaTime * speed);
+				yield return null;
+			}
+		}
+	}
+	public IEnumerator Jump() {
+		if (transform.position.y < 0) {
+			h = 1.5f;
+		} else {
+			h = 1;
+		}
+		if (rand < 5) {
+			target = new Vector3 (transform.position.x + 2, 0.25f, transform.position.z);
+		} else {
+			target = new Vector3 (transform.position.x - 2, 0.25f, transform.position.z);
+		}
+		yield return null;
+	}
+	public IEnumerator test() {
+		rb1 = this.GetComponent<Rigidbody>();
+		while (true) {
+			StartCoroutine (MoveToStart ());
+			StartCoroutine (Ready ());
+			yield return new WaitForSeconds (2);
+			StartCoroutine(Jump ());
+			StartCoroutine(Launch (target));
+			yield return new WaitForSeconds (1);
+			StartCoroutine(Jump ());
+			StartCoroutine(Launch (target));
+			yield return new WaitForSeconds (1);
+			StartCoroutine(Jump ());
+			StartCoroutine(Launch (target));
+			yield return new WaitForSeconds (1);
+			if (rand < 5) {
+				target = new Vector3 (transform.position.x + 3, -3, transform.position.z);
+			} else {
+				target = new Vector3 (transform.position.x - 3, -3, transform.position.z);
 			}
 			StartCoroutine(Launch (target));
-			target += new Vector3 (2, 0, 0);
-			print (transform.position);
-
-			yield return new WaitForSeconds (3);
+			yield return new WaitForSeconds (1f);
+			rb1.useGravity = false;
+			rb1.velocity = Vector3.zero;
+			yield return new WaitForSeconds (2);
 		}
-    }
+	}
+	void Start()
+	{
+		StartCoroutine (test ());
+	}
+
 
     void Update()
     {
@@ -70,7 +153,7 @@ public class ThrowObject : MonoBehaviour {
     {
         float displacementY = target.y - rb.position.y;
         Vector3 displacementXZ = new Vector3(target.x - rb.position.x, 0, target.z - rb.position.z);
-        float time = Mathf.Sqrt(-2 * h / gravity) + Mathf.Sqrt(2 * (displacementY - h) / gravity);
+        float time = Mathf.Sqrt(-2 * h / gravity) + Mathf.Sqrt(2 * (displacementY - h) / gravity) ;
         Vector3 velocityY = Vector3.up * Mathf.Sqrt(-2 * gravity * h);
         Vector3 velocityXZ = displacementXZ / time;
 

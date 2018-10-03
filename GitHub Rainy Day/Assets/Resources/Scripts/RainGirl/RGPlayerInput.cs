@@ -58,8 +58,11 @@ public class RGPlayerInput : MonoBehaviour {
 
 				if (chosenAI != null) {
 					// If the AI is playing hit animation, ignore
-					if (chosenAI.currentState == AI.RGState.HIT)
+					// If the AI is playing hit animation, ignore
+					if (chosenAI.currentState == AI.RGState.HIT) {
+						print ("HHHH");
 						return;
+					}
 					// set default direction
 					chosenAI.TurnOnArrow (chosenAI.movement.direction);
 					chosenDirection = chosenAI.movement.direction;
@@ -85,8 +88,11 @@ public class RGPlayerInput : MonoBehaviour {
 							if (chosenAI != null) {
 								
 								// If the AI is playing hit animation, ignore
-								if (chosenAI.currentState == AI.RGState.HIT)
+								if (chosenAI.currentState == AI.RGState.HIT) {
+									print ("HHHH");
 									return;
+								}
+							
 								// set default direction
 								chosenAI.TurnOnArrow(chosenAI.movement.direction);
 								chosenDirection = chosenAI.movement.direction;
@@ -156,6 +162,11 @@ public class RGPlayerInput : MonoBehaviour {
 		if (Input.GetMouseButtonUp (0)) {
 
 			if (chosenAI != null) {
+				// If the AI is playing hit animation, ignore
+				if (chosenAI.currentState == AI.RGState.HIT) {
+					return;
+				}
+
 				chosenAI.movement.GoToDirection (chosenDirection);
 				chosenAI.TurnOffAllArrow ();
 				chosenAI = null;

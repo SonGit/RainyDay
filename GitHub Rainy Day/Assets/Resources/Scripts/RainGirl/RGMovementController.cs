@@ -128,7 +128,6 @@ public class RGMovementController : MonoBehaviour {
 
 		if (mesh != null) {
 			mesh.localRotation = Quaternion.Slerp (mesh.localRotation, Quaternion.Euler (targetEulerAngle), Time.deltaTime * rotSpeed);
-			print ("targetEulerAngle " + targetEulerAngle);
 		}
 
 		else {
@@ -144,14 +143,14 @@ public class RGMovementController : MonoBehaviour {
 		tileNo = 1;
 		currentTile = new Vector3 (Mathf.Round (transform.position.x), 0, Mathf.Round (transform.position.z));
 		seeker = this.GetComponent<Seeker> ();
-		FollowPath ();
+//		FollowPath ();
 	}
 	// Update is called once per frame
 	void Update () {
 		
 		currentTile = new Vector3 (Mathf.Round (transform.position.x), 0, Mathf.Round (transform.position.z));
 
-		if (isRun) {
+
 
 			if (!pathfinding) {
 				Move ();
@@ -186,11 +185,13 @@ public class RGMovementController : MonoBehaviour {
 
 					currentWaypointNo++;
 
-					if (currentWaypointNo >= path.vectorPath.Count
-					) 
+					if (currentWaypointNo >= path.vectorPath.Count) 
 					{
 						pathfinding = false;
-					} else {
+						Destroy (gameObject);
+					} 
+					else 
+					{
 						currentWaypoint = path.vectorPath[currentWaypointNo];
 					}
 			
@@ -207,7 +208,7 @@ public class RGMovementController : MonoBehaviour {
 				gpsDrawLine.DrawPath (remainingPath);
 			}
 		
-		}
+
 	
 	}
 		
@@ -215,12 +216,12 @@ public class RGMovementController : MonoBehaviour {
 
 	public void Run()
 	{
-		isRun = true;
+		speed = 1;
 	}
 
 	public void Stop()
 	{
-		isRun = false;
+		speed = 0;
 	}
 
 	public void Reverse()
@@ -249,12 +250,11 @@ public class RGMovementController : MonoBehaviour {
 			break;
 		}
 	}
+		
 
-	public Transform target;
-
-	public void FollowPath()
+	public void FollowPath(Vector3 target)
 	{
-		seeker.StartPath(transform.position, target.position, OnPathComplete);
+		seeker.StartPath(transform.position, target, OnPathComplete);
 	}
 
 	private void OnPathComplete (Path p) {

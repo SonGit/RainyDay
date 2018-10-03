@@ -5,6 +5,7 @@ using UnityEngine;
 public class Shark : MonoBehaviour {
 	Vector3 nextPos;
 	public float speed;
+	public int id;
 	// Use this for initialization
 	void Start () {
 
@@ -26,9 +27,10 @@ public class Shark : MonoBehaviour {
 	//Force enemy to follow a pre-defined path 
 	protected virtual void Pathing()
 	{
-		int rand;
-		rand = Random.Range (1,10);
-		string pathName = "path" + rand;
+		
+//		rand = Random.Range (1,4);
+//		rand = 2;
+		string pathName = "path" + id;
 
 		//	Vector3[] pathNodes = iTweenPath.GetPath (pathName);
 		//	pathNodes [pathNodes.Length - 1] = stateController.playerReference.transform.position;
@@ -38,8 +40,8 @@ public class Shark : MonoBehaviour {
 		iTween.MoveTo(gameObject, 
 			iTween.Hash("path", iTweenPath.GetPath(pathName), 
 				"orienttopath", true, 
-				"looktime", 0.001f, 
-				"lookahead", 0.001f, 
+				"looktime", 0.01f, 
+				"lookahead", 0.01f, 
 				"speed", speed, 
 				"easetype", iTween.EaseType.linear, 
 				"oncomplete", "OnCompletePath"));
