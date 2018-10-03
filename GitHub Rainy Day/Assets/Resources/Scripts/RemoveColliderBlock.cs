@@ -14,7 +14,7 @@ public class RemoveColliderBlock : MonoBehaviour {
 		
 	}
 	AI ai ;
-	void OnTriggerEnter(Collider other)
+	void OnTriggerStay(Collider other)
 	{
 	 ai = other.GetComponent<AI> ();
 		if (ai != null) {

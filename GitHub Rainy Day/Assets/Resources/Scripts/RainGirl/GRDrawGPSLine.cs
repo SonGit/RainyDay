@@ -18,13 +18,17 @@ public class GRDrawGPSLine : MonoBehaviour {
 
 	public void DrawPath(List<Vector3> nodes)
 	{
+		worldLine = this.GetComponent<WorldLine> ();
 		this.origin = origin;
 		int i = 0;
+
 		worldLine.line.Clear ();
+		worldLine.MakeNewMesh ();
+
 		foreach (Vector3 node in nodes) {
 
 			worldLine.line.Push ();
-			worldLine.line.EditPoint (i,node + new Vector3(0,.2f,0),.1f);
+			worldLine.line.EditPoint (i,node + new Vector3(0,.3f,0),.05f);
 			i++;
 		}
 

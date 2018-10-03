@@ -19,6 +19,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4689597173948534}
+  - component: {fileID: 114066703944276876}
   - component: {fileID: 114013296480232222}
   - component: {fileID: 114074486615678406}
   - component: {fileID: 54804904025103228}
@@ -1304,7 +1305,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1004520455014366}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1, y: 0, z: 1}
+  m_LocalPosition: {x: 4.98, y: 0, z: 1.072}
   m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
   m_Children:
   - {fileID: 4366712860349046}
@@ -1572,6 +1573,18 @@ MonoBehaviour:
   currentState: 2
   arrows: []
   raycasting: 1
+--- !u!114 &114066703944276876
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1004520455014366}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc06c98fbc7a6be4087a81db2e83f98c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 0
 --- !u!114 &114074486615678406
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1590,9 +1603,12 @@ MonoBehaviour:
   direction: 0
   changedDir: 0
   pathfinding: 0
+  remainingPath: []
   currentTile: {x: 0, y: 0, z: 0}
+  gpsLinePrefab: {fileID: 1630510700124788, guid: 4cea91779fbe8f44888e410111abff50,
+    type: 2}
+  gpsDrawLine: {fileID: 0}
   isRotated: 0
-  target: {fileID: 0}
 --- !u!114 &114156602016983304
 MonoBehaviour:
   m_ObjectHideFlags: 1

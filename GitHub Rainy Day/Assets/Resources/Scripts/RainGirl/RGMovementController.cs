@@ -42,8 +42,10 @@ public class RGMovementController : MonoBehaviour {
 
 	[SerializeField]
 	private Vector3 currentTile;
+	[SerializeField]
+	private GameObject gpsLinePrefab;
 
-	public GRDrawGPSLine gpsDrawLine;
+	private GRDrawGPSLine gpsDrawLine;
 
 	public void GoToRandDirection()
 	{
@@ -267,6 +269,9 @@ public class RGMovementController : MonoBehaviour {
 			pathfinding = true;
 
 			remainingPath = new List<Vector3>(p.vectorPath);
+
+			GameObject lineGameObject = (GameObject)Instantiate (gpsLinePrefab, Vector3.zero, gpsLinePrefab.transform.rotation);
+			gpsDrawLine = lineGameObject.GetComponent<GRDrawGPSLine> ();
 
 			if(gpsDrawLine != null)
 			gpsDrawLine.DrawPath (remainingPath);
