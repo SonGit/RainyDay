@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Lean.Pool;
 using Pathfinding;
+using System.Linq;
 
 public enum Direction
 {
@@ -37,9 +38,12 @@ public class RGMovementController : MonoBehaviour {
 	int currentWaypointNo;
 	Path path;
 	public bool pathfinding;
+	public List<Vector3> remainingPath;
 
 	[SerializeField]
 	private Vector3 currentTile;
+
+	public GRDrawGPSLine gpsDrawLine;
 
 	public void GoToRandDirection()
 	{
@@ -76,7 +80,7 @@ public class RGMovementController : MonoBehaviour {
 
 	void Move () {
 		
-		currentTile = new Vector3 (Mathf.Round (transform.position.x), 0, Mathf.Round (transform.position.z));
+	
 
 		if (changedDir) {
 			float distanceToTargetTile = Vector3.Distance (transform.position, targetTile);
@@ -144,6 +148,8 @@ public class RGMovementController : MonoBehaviour {
 	}
 	// Update is called once per frame
 	void Update () {
+		
+		currentTile = new Vector3 (Mathf.Round (transform.position.x), 0, Mathf.Round (transform.position.z));
 
 		if (isRun) {
 
@@ -180,15 +186,26 @@ public class RGMovementController : MonoBehaviour {
 
 					currentWaypointNo++;
 
-					if (currentWaypointNo >= path.vectorPath.Count) {
-						//pathfinding = false;
+					if (currentWaypointNo >= path.vectorPath.Count
+					) 
+					{
+						pathfinding = false;
 					} else {
 						currentWaypoint = path.vectorPath[currentWaypointNo];
 					}
+			
+					remainingPath.Clear ();
 
+					for (int i = currentWaypointNo - 1; i < path.vectorPath.Count ; i++) {
+						remainingPath.Add (path.vectorPath[i]);
+					}
+						
 				}
-			}
 
+				remainingPath [0] = transform.position;
+				if(gpsDrawLine != null)
+				gpsDrawLine.DrawPath (remainingPath);
+			}
 		
 		}
 	
@@ -248,9 +265,16 @@ public class RGMovementController : MonoBehaviour {
 			currentWaypoint = transform.position;
 			currentWaypointNo = 0;
 			pathfinding = true;
+
+			remainingPath = new List<Vector3>(p.vectorPath);
+
+			if(gpsDrawLine != null)
+			gpsDrawLine.DrawPath (remainingPath);
+
 		} else {
 			Debug.Log ("No Path!");
 		}
+
 
 	}
 }
