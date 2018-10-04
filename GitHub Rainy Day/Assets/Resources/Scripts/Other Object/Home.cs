@@ -6,7 +6,7 @@ using UnityEngine;
 public class Home : MonoBehaviour {
 	
 
-	public GirlType girltype;
+	public GirlType hometype;
 
 	public Transform exitPoint;
 

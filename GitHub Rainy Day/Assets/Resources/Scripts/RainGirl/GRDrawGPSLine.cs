@@ -28,7 +28,7 @@ public class GRDrawGPSLine : MonoBehaviour {
 		foreach (Vector3 node in nodes) {
 
 			worldLine.line.Push ();
-			worldLine.line.EditPoint (i,node + new Vector3(0,.3f,0),.05f);
+			worldLine.line.EditPoint (i,node + new Vector3(0,.025f,0),.05f);
 			i++;
 		}
 

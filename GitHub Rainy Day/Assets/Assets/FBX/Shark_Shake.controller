@@ -28,7 +28,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: TakeItSlow
-  m_Speed: 1
+  m_Speed: 0.5
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours: []
@@ -40,7 +40,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 56faac3216a4f284b8f282fbe2c6ffa7, type: 3}
+  m_Motion: {fileID: 7400002, guid: 56faac3216a4f284b8f282fbe2c6ffa7, type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 

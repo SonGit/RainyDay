@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PowerManager : MonoBehaviour {
+//	private AI ai;
 
 	// Use this for initialization
 	void Start () {
-		
+//		ai = GetComponent<AI> ();
 	}
 	
 	// Update is called once per frame
@@ -31,8 +32,14 @@ public class PowerManager : MonoBehaviour {
 
 					if (homeScript != null) {
 
-						if (rainGirl.type == homeScript.girltype) {
+						if (rainGirl.type == homeScript.hometype && 
+							rainGirl.ai.currentState != AI.RGState.START && 
+							rainGirl.ai.currentState != AI.RGState.WAIT && 
+							!rainGirl.ai.movement.pathfinding	)
+
+							{
 							rainGirl.FollowPathHome (homeScript.exitPoint.position);
+							}
 						}
 
 					}
@@ -41,7 +48,7 @@ public class PowerManager : MonoBehaviour {
 
 			}
 
-		}
+
 	}
 
 	GameObject[] GetAllGirl()

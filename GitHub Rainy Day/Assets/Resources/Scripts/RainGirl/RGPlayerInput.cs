@@ -57,12 +57,13 @@ public class RGPlayerInput : MonoBehaviour {
 				chosenAI = hit.transform.GetComponent<AI> ();
 
 				if (chosenAI != null) {
-					// If the AI is playing hit animation, ignore
-					// If the AI is playing hit animation, ignore
-					if (chosenAI.currentState == AI.RGState.HIT) {
-						print ("HHHH");
+
+					if (chosenAI.movement.pathfinding)
 						return;
-					}
+
+					if (!CheckValidState (chosenAI.currentState))
+						return;
+					
 					// set default direction
 					chosenAI.TurnOnArrow (chosenAI.movement.direction);
 					chosenDirection = chosenAI.movement.direction;
@@ -87,11 +88,11 @@ public class RGPlayerInput : MonoBehaviour {
 
 							if (chosenAI != null) {
 								
-								// If the AI is playing hit animation, ignore
-								if (chosenAI.currentState == AI.RGState.HIT) {
-									print ("HHHH");
+								if (chosenAI.movement.pathfinding)
 									return;
-								}
+
+								if (!CheckValidState (chosenAI.currentState))
+									return;
 							
 								// set default direction
 								chosenAI.TurnOnArrow(chosenAI.movement.direction);
@@ -242,4 +243,16 @@ public class RGPlayerInput : MonoBehaviour {
 	}
 
 
+	bool CheckValidState(AI.RGState inputState)
+	{
+		
+		if (inputState == AI.RGState.DIZZY ||
+		   inputState == AI.RGState.DIZZY_ANIM ||
+		   inputState == AI.RGState.HIT ||
+		   inputState == AI.RGState.START ||
+		   inputState == AI.RGState.WAIT) {
+			return false;
+		}
+		return true;
+	}
 }

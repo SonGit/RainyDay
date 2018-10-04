@@ -175,7 +175,7 @@ MonoBehaviour:
         m_NumColorKeys: 2
         m_NumAlphaKeys: 2
       jointOption: 0
-  useUpdate: 0
+  useUpdate: 1
 --- !u!114 &114748328433772530
 MonoBehaviour:
   m_ObjectHideFlags: 1

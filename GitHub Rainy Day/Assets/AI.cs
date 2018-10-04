@@ -51,6 +51,8 @@ public class AI : MonoBehaviour {
 
 	int layer_mask;
 
+	Collider collider;
+
 	void Start () {
 
 		arrows = this.GetComponentsInChildren<Arrow> ();
@@ -61,6 +63,9 @@ public class AI : MonoBehaviour {
 
 		layer_mask = LayerMask.GetMask("Fence","AI");
 
+		collider = this.GetComponent<Collider> ();
+
+		collider.enabled = false;
 	}
 	
 	// Update is called once per frame
@@ -100,8 +105,9 @@ public class AI : MonoBehaviour {
 			debugText.text = "Falling!";
 
 			if (transform.position.y > 0) {
-				transform.position += new Vector3 (0, -3 * Time.deltaTime, 0);
+				transform.position += new Vector3 (0, -.5f * Time.deltaTime, 0);
 			} else {
+				collider.enabled = true;
 				Walk ();
 			}
 		}
@@ -114,7 +120,6 @@ public class AI : MonoBehaviour {
 			if (!roller.gameObject.activeInHierarchy) {
 				roller.gameObject.SetActive (true);
 				roller.localPosition = new Vector3 (0,-1,0);
-				movement.rotateToTarget = false;
 			}
 
 			// move roller to position
@@ -131,12 +136,21 @@ public class AI : MonoBehaviour {
 				dizzyAnimTimeCount = 0;
 				movement.Run ();
 				movement.Reverse ();
-				roller.gameObject.SetActive (false);
+			
 				currentState = RGState.DIZZY;
-				movement.rotateToTarget = true;
 			}
 
 		}
+
+		// allow dizzy to manually rotate mesh
+		if (currentState == RGState.DIZZY_ANIM) {
+			movement.rotateToTarget = false;
+			roller.gameObject.SetActive (true);
+		} else {
+			movement.rotateToTarget = true;
+			roller.gameObject.SetActive (false);
+		}
+			
 
 		if (currentState == RGState.DIZZY) {
 			dizzyAnimTimeCount += Time.deltaTime;
@@ -152,12 +166,13 @@ public class AI : MonoBehaviour {
 
 	public void Dizzy()
 	{
-		if (currentState == RGState.DIZZY) {
+		if (currentState == RGState.DIZZY || currentState == RGState.START) {
 			return;
 		}
 
-		if (currentState != RGState.DIZZY_ANIM)
+		if (currentState != RGState.DIZZY_ANIM) {
 			currentState = RGState.DIZZY_ANIM;
+		}
 		else 
 		{
 			return;
@@ -299,4 +314,5 @@ public class AI : MonoBehaviour {
 
 		}
 	}
+
 }
