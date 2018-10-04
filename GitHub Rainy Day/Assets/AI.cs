@@ -10,21 +10,36 @@ public enum GirlType
 	YELLOW,
 }
 public class AI : MonoBehaviour {
+	
+	[SerializeField]
+	private float hitTime = 3;
+	[SerializeField]
+	private float hitTimeCount = 0;
 
-	public float hitTime = 3;
-	public float hitTimeCount;
+	[SerializeField]
+	private float dizzyTime = 3;
+	[SerializeField]
+	private float dizzyTimeCount = 0;
+
+	[SerializeField]
+	private float dizzyAnimTime = 3;
+	[SerializeField]
+	private float dizzyAnimTimeCount = 0;
+
+	public Transform roller;
 
 	// Use this for initialization
 	public RGMovementController movement;
 
 	public TextMeshPro debugText;
 
-
 	public enum RGState
 	{
 		WALK,
 		WAIT,
 		HIT,
+		DIZZY_ANIM,
+		DIZZY,
 		START
 	}
 
@@ -45,12 +60,18 @@ public class AI : MonoBehaviour {
 		TurnOffAllArrow ();
 
 		layer_mask = LayerMask.GetMask("Fence","AI");
+
 	}
 	
 	// Update is called once per frame
 	void Update () {
+
+		if (Input.GetKeyDown (KeyCode.A)) {
+			Dizzy ();
+		}
 		
 		if (currentState == RGState.HIT) {
+			
 			hitTimeCount += Time.deltaTime;
 
 			if (hitTimeCount > hitTime) {
@@ -64,6 +85,7 @@ public class AI : MonoBehaviour {
 		}
 
 		if (currentState == RGState.WAIT) {
+			
 			waitTimeCount += Time.deltaTime;
 
 			if (waitTimeCount > .5f) {
@@ -83,8 +105,66 @@ public class AI : MonoBehaviour {
 				Walk ();
 			}
 		}
+
+		if (currentState == RGState.DIZZY_ANIM) {
+
+			dizzyAnimTimeCount += Time.deltaTime;
+
+			// if roller is not active, reset its position 
+			if (!roller.gameObject.activeInHierarchy) {
+				roller.gameObject.SetActive (true);
+				roller.localPosition = new Vector3 (0,-1,0);
+				movement.rotateToTarget = false;
+			}
+
+			// move roller to position
+			if (roller.localPosition != Vector3.zero) {
+				roller.localPosition = Vector3.MoveTowards (roller.localPosition, Vector3.zero, 10 * Time.deltaTime);
+			} 
+
+			// keep spinning it
+			roller.localEulerAngles += new Vector3 (0,400,0) * Time.deltaTime;
+			movement.mesh.localEulerAngles += new Vector3 (0,600,0) * Time.deltaTime;
+
+			// Once anim dizzy is completed, get to dizzy state
+			if (dizzyAnimTimeCount > dizzyAnimTime) {
+				dizzyAnimTimeCount = 0;
+				movement.Run ();
+				movement.Reverse ();
+				roller.gameObject.SetActive (false);
+				currentState = RGState.DIZZY;
+				movement.rotateToTarget = true;
+			}
+
+		}
+
+		if (currentState == RGState.DIZZY) {
+			dizzyAnimTimeCount += Time.deltaTime;
+
+			if (dizzyAnimTimeCount > dizzyTime) {
+				dizzyAnimTimeCount = 0;
+				Walk ();
+			}
+		}
 			
 		RaycastForward ();
+	}
+
+	public void Dizzy()
+	{
+		if (currentState == RGState.DIZZY) {
+			return;
+		}
+
+		if (currentState != RGState.DIZZY_ANIM)
+			currentState = RGState.DIZZY_ANIM;
+		else 
+		{
+			return;
+		}
+
+		debugText.text = "Dizzy ANIM!";
+		movement.Stop ();
 	}
 
 	public bool raycasting = true;
@@ -184,6 +264,7 @@ public class AI : MonoBehaviour {
 	{
 		hitTimeCount = 0;
 		waitTimeCount = 0;
+		dizzyTimeCount = 0;
 	}
 
 	void WalkBack()

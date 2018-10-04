@@ -27,7 +27,7 @@ public class RGMovementController : MonoBehaviour {
 	// Private movement vars
 	public bool changedDir;
 	private Vector3 targetTile;
-	private Vector3 targetEulerAngle;
+	public Vector3 targetEulerAngle;
 	private float tileNo;
 	private int startDir;
 
@@ -46,6 +46,11 @@ public class RGMovementController : MonoBehaviour {
 	private GameObject gpsLinePrefab;
 
 	private GRDrawGPSLine gpsDrawLine;
+
+	// Set this to false to manually rotate mesh
+	public bool rotateToTarget = true;
+
+	private AI ai;
 
 	public void GoToRandDirection()
 	{
@@ -80,15 +85,20 @@ public class RGMovementController : MonoBehaviour {
 
 	}
 
+
+
 	void Move () {
-		
-	
 
 		if (changedDir) {
 			float distanceToTargetTile = Vector3.Distance (transform.position, targetTile);
 
 			if (distanceToTargetTile <= 0) {
 				changedDir = false;
+
+				if (ai.currentState == AI.RGState.DIZZY) {
+					GoToRandDirection ();
+				}
+
 			} else {
 				transform.position = Vector3.MoveTowards (transform.position, targetTile, speed * Time.deltaTime);
 			}
@@ -121,38 +131,28 @@ public class RGMovementController : MonoBehaviour {
 			targetEulerAngle = new Vector3 (0, 90, 0);
 		}
 
-		if (mesh.localRotation != Quaternion.Euler (targetEulerAngle)) {
-			isRotated = false;
-		} else {
-			isRotated = true;
-		}
-
-
-		if (mesh != null) {
+		if (rotateToTarget && mesh != null) {
 			mesh.localRotation = Quaternion.Slerp (mesh.localRotation, Quaternion.Euler (targetEulerAngle), Time.deltaTime * rotSpeed);
 		}
-
 		else {
-			Debug.Log ("No Mesh Founded!");
+
 		}
 	}
-
-	public bool isRotated;
-
+		
 	void Start () {
+		
 		targetTile = new Vector3 (Mathf.Round(transform.position.x),0,Mathf.Round(transform.position.z));
 		targetEulerAngle = new Vector3 (0,0,0);
 		tileNo = 1;
 		currentTile = new Vector3 (Mathf.Round (transform.position.x), 0, Mathf.Round (transform.position.z));
 		seeker = this.GetComponent<Seeker> ();
-//		FollowPath ();
+		ai = this.GetComponent<AI> ();
+
 	}
 	// Update is called once per frame
 	void Update () {
 		
 		currentTile = new Vector3 (Mathf.Round (transform.position.x), 0, Mathf.Round (transform.position.z));
-
-
 
 			if (!pathfinding) {
 				Move ();
@@ -214,8 +214,6 @@ public class RGMovementController : MonoBehaviour {
 	
 	}
 		
-	private bool isRun ;
-
 	public void Run()
 	{
 		speed = 1;
@@ -253,7 +251,6 @@ public class RGMovementController : MonoBehaviour {
 		}
 	}
 		
-
 	public void FollowPath(Vector3 target)
 	{
 		seeker.StartPath(transform.position, target, OnPathComplete);
