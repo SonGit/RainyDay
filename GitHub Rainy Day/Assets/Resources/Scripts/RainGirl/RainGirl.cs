@@ -5,13 +5,16 @@ using UnityEngine;
 public class RainGirl : MonoBehaviour {
 
 	public GirlType type;
-
+	private SkinnedMeshRenderer skin;
 	public AI ai;
 
 	// Use this for initialization
 	void Start () {
 		ai = this.GetComponent<AI> ();
-		RandomGirlType ();
+		skin = this.GetComponentInChildren<SkinnedMeshRenderer> ();
+//		skin.material.mainTexture = Resources.Load ("Materials/Player/Boy_tex_red.tga",Texture2D);
+		//print (mat);
+		//RandomGirlType ();
 	}
 	
 	// Update is called once per frame
@@ -21,7 +24,8 @@ public class RainGirl : MonoBehaviour {
 
 	public void FollowPathHome(Vector3 target)
 	{
-
+		ai.Anim.ResetTrigger ("Stun");
+		ai.Anim.SetTrigger ("GPS");
 		ai.movement.FollowPath (target);
 	}
 
@@ -61,4 +65,5 @@ public class RainGirl : MonoBehaviour {
 
 		type = newType;
 	}
+
 }

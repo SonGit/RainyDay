@@ -28,94 +28,82 @@ public class Fence : MonoBehaviour {
 
 	public void PopUp()
 	{
-		switch (direction) {
-		case Direction.UP:
-//			transform.eulerAngles = new Vector3 (0,180,0);
-//			if (isPopDown = true) {
+		//StopAllCoroutines ();
+		if (isPopDown) {
+			switch (direction) {
+			case Direction.UP:
 				iTween.RotateTo (this.gameObject, iTween.Hash (
 					"x", this.gameObject.transform.eulerAngles.x + 180,
 					"time", popTime,
 					"easetype", iTween.EaseType.spring));
 				isPopDown = false;
-//			}
-			break;
-		case Direction.DOWN:
-//			transform.eulerAngles = new Vector3 (0,180,0);
-//			if (isPopDown = true) {
+				break;
+			case Direction.DOWN:
 				iTween.RotateTo (this.gameObject, iTween.Hash (
 					"x", this.gameObject.transform.eulerAngles.x - 180,
 					"time", popTime,
 					"easetype", iTween.EaseType.spring));
 				isPopDown = false;
-//			}
-			break;
-		case Direction.LEFT:
-//			if (isPopDown = true) {
+				break;
+			case Direction.LEFT:
 				transform.eulerAngles = new Vector3 (-180, -90, 0);
 				iTween.RotateTo (this.gameObject, iTween.Hash (
 					"x", this.gameObject.transform.eulerAngles.x - 180,
 					"time", popTime,
 					"easetype", iTween.EaseType.spring));
 				isPopDown = false;
-//			}
-			break;
-		case Direction.RIGHT:
-//			if (isPopDown = true) {
+				break;
+			case Direction.RIGHT:
 				transform.eulerAngles = new Vector3 (180, -90, 0);
 				iTween.RotateTo (this.gameObject, iTween.Hash (
 					"x", this.gameObject.transform.eulerAngles.x + 180,
 					"time", popTime,
 					"easetype", iTween.EaseType.spring));
 				isPopDown = false;
-//			}
-			break;
+				break;
+			}
 		}
 	}
 
 	public void PopDown()
 	{
+		//StopAllCoroutines ();
+		if (!isPopDown) {
 			switch (direction) {
 			case Direction.UP:
-//			if (isPopDown = false) {
 				transform.eulerAngles = new Vector3 (0, 0, 0);
 				iTween.RotateTo (this.gameObject, iTween.Hash (
 					"x", this.gameObject.transform.eulerAngles.x + 180,
 					"time", popTime,
 					"easetype", iTween.EaseType.spring));
 				isPopDown = true;
-//			}
 				break;
 			case Direction.DOWN:
-//			if (isPopDown = false) {
 				transform.eulerAngles = new Vector3 (0, 0, 0);
 				iTween.RotateTo (this.gameObject, iTween.Hash (
 					"x", this.gameObject.transform.eulerAngles.x - 180,
 					"time", popTime,
 					"easetype", iTween.EaseType.spring));
 				isPopDown = true;
-//			}
 				break;
 			case Direction.LEFT:
-//			if (isPopDown = false) {
 				transform.eulerAngles = new Vector3 (0, 90, 0);
 				iTween.RotateTo (this.gameObject, iTween.Hash (
 					"x", this.gameObject.transform.eulerAngles.x - 180,
 					"time", popTime,
 					"easetype", iTween.EaseType.spring));
 				isPopDown = true;
-//			}
 				break;
 			case Direction.RIGHT:
-//			if (isPopDown = false) {
 				transform.eulerAngles = new Vector3 (0, 90, 0);
 				iTween.RotateTo (this.gameObject, iTween.Hash (
 					"x", this.gameObject.transform.eulerAngles.x + 180,
 					"time", popTime,
 					"easetype", iTween.EaseType.spring));
 				isPopDown = true;
-//			}
 				break;
 			}
 		}
+	}
 }
 

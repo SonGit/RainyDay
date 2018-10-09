@@ -14,7 +14,7 @@ public enum Direction
 }
 
 public class RGMovementController : MonoBehaviour {
-	public Animator Anim_hit;
+
 
 	[SerializeField]
 	public Transform mesh;
@@ -157,6 +157,7 @@ public class RGMovementController : MonoBehaviour {
 			if (!pathfinding) {
 				Move ();
 			} else {
+			speed = 2;
 				if (Vector3.Distance (transform.position, currentWaypoint) > 0.01f) {
 					
 					transform.position = Vector3.MoveTowards (transform.position, currentWaypoint, Time.deltaTime * speed);
@@ -190,11 +191,15 @@ public class RGMovementController : MonoBehaviour {
 					if (currentWaypointNo >= path.vectorPath.Count) 
 					{
 						pathfinding = false;
-						Destroy (gameObject);
+						OnArrivedHome ();
 					} 
 					else 
 					{
 						currentWaypoint = path.vectorPath[currentWaypointNo];
+
+
+						if(gpsDrawLine != null)
+							gpsDrawLine.PopANode (remainingPath);
 					}
 			
 					remainingPath.Clear ();
@@ -206,12 +211,17 @@ public class RGMovementController : MonoBehaviour {
 				}
 
 				remainingPath [0] = transform.position;
-				if(gpsDrawLine != null)
-				gpsDrawLine.DrawPath (remainingPath);
 			}
 		
 
 	
+	}
+
+	void OnArrivedHome()
+	{
+		if (gpsDrawLine != null)
+			Destroy (gpsDrawLine.gameObject);
+		Destroy (gameObject);
 	}
 		
 	public void Run()
@@ -271,7 +281,7 @@ public class RGMovementController : MonoBehaviour {
 			gpsDrawLine = lineGameObject.GetComponent<GRDrawGPSLine> ();
 
 			if(gpsDrawLine != null)
-			gpsDrawLine.DrawPath (remainingPath);
+				gpsDrawLine.DrawPath (remainingPath,transform);
 
 		} else {
 			Debug.Log ("No Path!");

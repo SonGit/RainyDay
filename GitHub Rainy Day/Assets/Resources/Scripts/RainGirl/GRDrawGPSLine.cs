@@ -28,7 +28,7 @@ public class GRDrawGPSLine : MonoBehaviour {
 
 	void Update()
 	{
-		if (first) {
+		if (first && org != null) {
 			worldLine.line.EditPoint (0,new Vector3((float)System.Math.Round(org.position.x,1),(float)System.Math.Round(org.position.y,1),(float)System.Math.Round(org.position.z,1)),0.05f);
 		}
 	}

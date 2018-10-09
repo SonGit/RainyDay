@@ -82,7 +82,7 @@ public class RGPlayerInput : MonoBehaviour {
 						// If the AI is within distance, select it
 						if (distance < .7f) {
 
-							print ("You choose  "+closest.name +" distance "+ distance);
+//							print ("You choose  "+closest.name +" distance "+ distance);
 
 							chosenAI = closest.GetComponent<AI> ();
 

@@ -21,7 +21,7 @@ namespace geniikw.DataRenderer2D
                 throw new Exception("can't add");
 
             p.position = owner.transform.InverseTransformPoint(p.position);
-			p.position = new Vector3 (  p.position.x,  p.position.y,0);
+			p.position = new Vector3 (  (float)System.Math.Round(p.position.x,1),  (float)System.Math.Round(p.position.y,1),0);
             points.Add(p);
 
             if (EditCallBack != null)
@@ -62,8 +62,8 @@ namespace geniikw.DataRenderer2D
             }
 
             p.position = owner.transform.InverseTransformPoint(p.position);
-			p.position = new Vector3 (  p.position.x,  p.position.y,0);
-			Debug.Log (p.position.z);
+			p.position = new Vector3 (  (float)System.Math.Round(p.position.x,1),  (float)System.Math.Round(p.position.y,1),0);
+		
             if (mode == LineMode.BezierMode)
             {
                 if (idx == 0)

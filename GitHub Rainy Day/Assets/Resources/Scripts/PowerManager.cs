@@ -1,20 +1,45 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+public enum Power{
+	GPS,
+	LIFE,
+	REVERSE,
+	FENCE
+}
 public class PowerManager : MonoBehaviour {
 //	private AI ai;
-
+	FenceManager fen;
+	private float countFence;
+	public float FenceCD;
+	public static PowerManager instance;
 	// Use this for initialization
+	void Awake()
+	{
+		if (instance == null)
+			instance = this;
+	}
 	void Start () {
 //		ai = GetComponent<AI> ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		
+//		if (countFence > 0) {
+//			countFence -= Time.deltaTime;
+//		}
+//		if (countFence == 0) {
+//			FenceDown ();
+//		}
 	}
 
+	public void FenceUp() {
+		fen.PopAllUp ();
+		countFence = FenceCD;
+	}
+	public void LifePower() {
+	
+	}
 	public void GPSPower()
 	{
 		GameObject[] girls = GetAllGirl ();
@@ -38,17 +63,23 @@ public class PowerManager : MonoBehaviour {
 							!rainGirl.ai.movement.pathfinding	)
 
 							{
+							
 							rainGirl.FollowPathHome (homeScript.exitPoint.position);
 							}
 						}
-
 					}
-
 				}
-
 			}
+	}
+	public void ReversePower(){
+		GameObject[] girls = GetAllGirl ();
+		foreach (GameObject girl in girls) {
+			RainGirl rainGirl = girl.GetComponent<RainGirl> ();
 
-
+			if (rainGirl != null) {
+				rainGirl.ai.Dizzy ();
+			}
+		}
 	}
 
 	GameObject[] GetAllGirl()
