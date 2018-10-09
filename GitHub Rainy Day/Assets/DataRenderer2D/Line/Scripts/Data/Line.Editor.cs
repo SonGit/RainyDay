@@ -21,12 +21,23 @@ namespace geniikw.DataRenderer2D
                 throw new Exception("can't add");
 
             p.position = owner.transform.InverseTransformPoint(p.position);
-
+			p.position = new Vector3 (  p.position.x,  p.position.y,0);
             points.Add(p);
 
             if (EditCallBack != null)
                 EditCallBack();
         }
+
+		public void PushFront()
+		{
+			if (mode == LineMode.BezierMode)
+				throw new Exception("can't add");
+			
+			points.Insert(0,Point.Zero);
+
+			if (EditCallBack != null)
+				EditCallBack();
+		}
 
         public void Push()
         {
@@ -51,6 +62,8 @@ namespace geniikw.DataRenderer2D
             }
 
             p.position = owner.transform.InverseTransformPoint(p.position);
+			p.position = new Vector3 (  p.position.x,  p.position.y,0);
+			Debug.Log (p.position.z);
             if (mode == LineMode.BezierMode)
             {
                 if (idx == 0)
@@ -103,6 +116,38 @@ namespace geniikw.DataRenderer2D
 
             return last;
         }
+
+		/// <summary>
+		/// remove first point
+		/// </summary>
+		/// <returns></returns>
+		public Point PopFirst()
+		{
+			if (mode == LineMode.BezierMode)
+				throw new Exception("can't remove");
+
+			var first = points[0];
+			points.RemoveAt(0);
+
+			if (EditCallBack != null)
+				EditCallBack();
+
+			return first;
+		}
+
+		public Point PopSecond()
+		{
+			if (mode == LineMode.BezierMode)
+				throw new Exception("can't remove");
+
+			var first = points[1];
+			points.RemoveAt(1);
+
+			if (EditCallBack != null)
+				EditCallBack();
+
+			return first;
+		}
         
         public int Count
         {
