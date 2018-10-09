@@ -250,7 +250,8 @@ public class RGPlayerInput : MonoBehaviour {
 		   inputState == AI.RGState.DIZZY_ANIM ||
 		   inputState == AI.RGState.HIT ||
 		   inputState == AI.RGState.START ||
-		   inputState == AI.RGState.WAIT) {
+		   inputState == AI.RGState.WAIT ||
+		   inputState == AI.RGState.FELL) {
 			return false;
 		}
 		return true;

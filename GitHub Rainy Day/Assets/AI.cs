@@ -15,12 +15,16 @@ public class AI : MonoBehaviour {
 	private float hitTime = 3;
 	[SerializeField]
 	private float hitTimeCount = 0;
-	[SerializeField]
-	private float fallTimeCount = 0;
+
 	[SerializeField]
 	private float dizzyTime = 3;
 	[SerializeField]
 	private float dizzyTimeCount = 0;
+
+	[SerializeField]
+	private float fallTime = 3;
+	[SerializeField]
+	private float fallTimeCount = 0;
 
 	[SerializeField]
 	private float dizzyAnimTime = 3;
@@ -42,7 +46,8 @@ public class AI : MonoBehaviour {
 		DIZZY_ANIM,
 		DIZZY,
 		START,
-		FALL
+		FALLING,
+		FELL
 	}
 
 	public RGState currentState;
@@ -55,7 +60,9 @@ public class AI : MonoBehaviour {
 
 	Collider collider;
 
-	void Start () {
+	bool isDead;
+
+	void Awake () {
 
 		arrows = this.GetComponentsInChildren<Arrow> ();
 
@@ -65,9 +72,9 @@ public class AI : MonoBehaviour {
 
 		TurnOffAllArrow ();
 
-		layer_mask = LayerMask.GetMask("Fence","AI");
+		layer_mask = LayerMask.GetMask("Fence","AI","Wall");
 
-		collider = this.GetComponentInChildren<Collider> ();
+		collider = this.GetComponent<Collider> ();
 
 		collider.enabled = false;
 	}
@@ -75,8 +82,17 @@ public class AI : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		if(currentState == RGState.FALL){
-			Falling ();
+		if (isDead)
+			return;
+
+		if(currentState == RGState.FALLING){
+			
+			fallTimeCount += Time.deltaTime;
+
+			if (fallTimeCount > fallTime) {
+				Fell ();
+				fallTimeCount = 0;
+			}
 		}
 		
 		if (currentState == RGState.HIT) {
@@ -169,6 +185,13 @@ public class AI : MonoBehaviour {
 		RaycastForward ();
 	}
 
+	void Fell()
+	{
+		currentState = RGState.FELL;
+		movement.enabled = false;
+		isDead = true;
+	}
+
 	public void Dizzy()
 	{
 		if (currentState == RGState.DIZZY || currentState == RGState.START || currentState == RGState.HIT) {
@@ -219,33 +242,45 @@ public class AI : MonoBehaviour {
 		// Does the ray intersect any objects excluding the player layer
 		if (Physics.Raycast(transform.position + new Vector3(0,1,0), raycastDir, out hit, Mathf.Infinity,layer_mask))
 		{
-//			Debug.Log(transform.name + " Did Hit " + hit.transform.name + " hit.distance " + hit.distance);
+		//	Debug.Log(transform.name + " Did Hit " + hit.transform.name + " hit.distance " + hit.distance);
 
 //			float distanceToHit = Vector3.Distance (transform.position,hit.transform.position);
 
 			if (hit.distance < 0.17f) {
 
-				// if the AI is not follow any path, play normal hit
-				if (!movement.pathfinding) {
-					OnHit ();
-				}
-				// else, just wait
-				else {
-					Wait ();
+				//Check if hit AI
+				if (hit.transform.gameObject.layer == LayerMask.NameToLayer ("AI")) {
+					
+					// if the AI is not follow any path, play normal hit
+					if (!movement.pathfinding) {
+						OnHit ();
+					}
+					// else, just wait
+					else {
+						Wait ();
+					}
 				}
 
 				//Check if hit fence
-				Fence fence = hit.transform.GetComponent<Fence>();
+				Fence fence = hit.transform.GetComponent<Fence> ();
 				// If hit fence, push it down
 				if (fence != null) {
 					fence.PopDown ();
 					fence.isPopDown = true;
 				}
-			}
+
+				//Check if out-of-bounds
+				if (hit.transform.gameObject.layer == LayerMask.NameToLayer ("Wall")) {
+					Falling ();
+				} 
+			} 
 
 			return true;
 		}
 
+		if (currentState == RGState.FALLING) {
+			Walk ();
+		}
 		return false;
 	}
 
@@ -282,9 +317,6 @@ public class AI : MonoBehaviour {
 		debugText.text = "Hit!";
 
 		ResetTimer ();
-
-
-
 	}
 
 	void ResetTimer()
@@ -292,6 +324,7 @@ public class AI : MonoBehaviour {
 		hitTimeCount = 0;
 		waitTimeCount = 0;
 		dizzyTimeCount = 0;
+		fallTimeCount = 0;
 	}
 
 	void WalkBack()
@@ -311,43 +344,41 @@ public class AI : MonoBehaviour {
 		debugText.text = "Walk!";
 		currentState = RGState.WALK;
 		movement.Run ();
+		ResetTimer ();
+	}
+
+	void Falling()
+	{
+		if (currentState == RGState.FALLING || currentState == RGState.FELL) {
+			return;
+		} else {
+			currentState = RGState.FALLING;
+		}
+		print ("FALLING");
+
+		movement.Stop();
+		Anim.ResetTrigger ("Walk");
+		Anim.ResetTrigger ("Dizzy");
+		Anim.SetTrigger ("StepFall");
+	}
+
+	void StopFalling()
+	{
+		currentState = RGState.WALK;
 	}
 
 	public void TurnOffAllArrow()
 	{
 		foreach (Arrow arrow in arrows) {
-
 			arrow.gameObject.SetActive (false);
-
 		}
 	}
 
 	public void TurnOnArrow(Direction direction)
 	{
 		foreach (Arrow arrow in arrows) {
-
 			arrow.gameObject.SetActive (arrow.direction == direction);
+		}
+	}
 
-		}
-	}
-	void Falling()
-	{
-		movement.Stop();
-		Anim.ResetTrigger ("Walk");
-		Anim.ResetTrigger ("Dizzy");
-		Anim.SetTrigger ("StepFall");
-	}
-	void OnCollisionEnter(Collision col)
-	{
-		if (col.collider.gameObject.layer == 14) {
-			Destroy (gameObject);	
-		}
-	}
-	void OnTriggerEnter(Collider fall)
-	{
-		if (fall.GetComponent<Collider>().gameObject.layer == 14) {
-			isFall = true;
-			currentState = RGState.FALL;
-		}
-	}
 }
