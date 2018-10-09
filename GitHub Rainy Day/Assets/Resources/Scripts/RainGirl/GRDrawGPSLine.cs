@@ -13,34 +13,33 @@ public class GRDrawGPSLine : MonoBehaviour {
 		worldLine.MakeNewMesh ();
 	}
 
-	public void DrawPath(List<Vector3> nodes)
+	public void DrawPath(List<Vector3> nodes,Transform org)
 	{
 		worldLine = this.GetComponent<WorldLine> ();
+
+		this.org = org;
 	
 		worldLine.line.Clear ();
 
 		foreach (Vector3 node in nodes) {
-			worldLine.line.Push (node + new Vector3(0,.025f,0),Vector3.zero,Vector3.zero,.05f);
+			worldLine.line.Push (node,Vector3.zero,Vector3.zero,.05f);
 		}
 	}
 
 	void Update()
 	{
-
+		if (first) {
+			worldLine.line.EditPoint (0,new Vector3((float)System.Math.Round(org.position.x,1),(float)System.Math.Round(org.position.y,1),(float)System.Math.Round(org.position.z,1)),0.05f);
+		}
 	}
+
+	bool first;
+	Transform org;
 
 	public void PopANode(List<Vector3> nodes)
 	{
-		for (int i = 0; i < nodes.Count; i++) {
-			// Fix for the spline's bug
-			if (i == 1) {
-				worldLine.line.EditPoint( i, new Point (nodes[i],new Vector3(0,-.01f,0),new Vector3(0,0,0),0.05f));
-			} else {
-				worldLine.line.EditPoint( i, new Point (nodes[i],Vector3.zero,Vector3.zero,0.05f));
-			}
-		}
-			
+		if(first)
+		worldLine.line.PopFirst ();	
+		first = true;
 	}
-
-
 }
