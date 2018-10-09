@@ -59,7 +59,7 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 45e454f3d8b00d247a0041d2441f5d5e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -93,12 +93,12 @@ Animator:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1630510700124788}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 88870f690bc2e934f8a551fc924a34f9, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
-  m_ApplyRootMotion: 0
+  m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
@@ -142,7 +142,7 @@ MonoBehaviour:
     option:
       startRatio: 0
       endRatio: 1
-      mode: 0
+      mode: 2
       divideLength: 0.1
       divideAngle: 5
       color:
@@ -175,7 +175,7 @@ MonoBehaviour:
         m_NumColorKeys: 2
         m_NumAlphaKeys: 2
       jointOption: 0
-  useUpdate: 1
+  useUpdate: 0
 --- !u!114 &114748328433772530
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -187,3 +187,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da757c5788c79a844b1f5d2d1d843198, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  worldLine: {fileID: 0}
