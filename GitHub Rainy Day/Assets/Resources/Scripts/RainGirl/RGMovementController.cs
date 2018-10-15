@@ -154,9 +154,9 @@ public class RGMovementController : MonoBehaviour {
 		
 		currentTile = new Vector3 (Mathf.Round (transform.position.x), 0, Mathf.Round (transform.position.z));
 
-			if (!pathfinding) {
+		if (!pathfinding) {
 				Move ();
-			} else {
+		} else  {
 			speed = 2;
 				if (Vector3.Distance (transform.position, currentWaypoint) > 0.01f) {
 					
@@ -263,7 +263,9 @@ public class RGMovementController : MonoBehaviour {
 		
 	public void FollowPath(Vector3 target)
 	{
-		seeker.StartPath(transform.position, target, OnPathComplete);
+		if (!ai.isDead) {
+			seeker.StartPath (transform.position, target, OnPathComplete);
+		}
 	}
 
 	private void OnPathComplete (Path p) {

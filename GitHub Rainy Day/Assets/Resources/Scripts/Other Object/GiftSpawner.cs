@@ -5,22 +5,24 @@ using UnityEngine;
 public class GiftSpawner : MonoBehaviour {
 	public GameObject Gift;
 	public float hGift;
+	public float spawnTime;
+	public float destroyTime;
 	private Power _pow;
 	private Vector3 pos;
 	// Use this for initialization
 	void RandomPower(){
 		int rand = Random.Range (0, 4);
 		switch (rand) {
-		case 1:
+		case 0:
 			_pow = Power.FENCE;
 			break;
-		case 2:
+		case 1:
 			_pow = Power.GPS;
 			break;
-		case 3:
+		case 2:
 			_pow = Power.LIFE;
 			break;
-		case 4:
+		case 3:
 			_pow = Power.REVERSE;
 			break;
 		}
@@ -36,9 +38,9 @@ public class GiftSpawner : MonoBehaviour {
 			GameObject _gift = (GameObject)Instantiate(Gift,pos,Quaternion.identity);
 			Gift gift =  _gift.GetComponent<Gift> ();
 			gift._pow = _pow;
-			yield return new WaitForSeconds (3);
+			yield return new WaitForSeconds (destroyTime);
 			Destroy (_gift);
-			yield return new WaitForSeconds (Random.Range(5,6));
+			yield return new WaitForSeconds (spawnTime);
 		}
 
 	}

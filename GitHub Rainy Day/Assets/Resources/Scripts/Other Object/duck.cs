@@ -4,7 +4,12 @@ using UnityEngine;
 
 public class duck : MonoBehaviour {
 	public float speed;
-	public int rand;
+	public enum duckID{
+		PATROL,
+		RIGHT,
+		LEFT
+	}
+	public duckID id;
 	// Use this for initialization
 	void Start () {
 		Pathing();
@@ -16,17 +21,7 @@ public class duck : MonoBehaviour {
 	}
 	protected virtual void Pathing()
 	{
-		
-//		rand = Random.Range (1,4);
-		//		rand = 2;
-		string pathName = "Duck" + rand;
-//		string pathName = "Duck";
-
-		//	Vector3[] pathNodes = iTweenPath.GetPath (pathName);
-		//	pathNodes [pathNodes.Length - 1] = stateController.playerReference.transform.position;
-		//iTweenPath path = iTweenPath.paths[pathName];
-		//path.nodes [path.nodes.Count - 1] = new Vector3(1,1,1);
-
+		string pathName = "Duck_" + id.ToString();;
 		iTween.MoveTo(gameObject, 
 			iTween.Hash("path", iTweenPath.GetPath(pathName), 
 				"orienttopath", true, 

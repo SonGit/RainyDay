@@ -7,6 +7,7 @@ public class Gift : MonoBehaviour {
 	public float speedBeating;
 	public Power _pow;
 	public TextMeshPro debugText;
+	public GameObject FX;
 	// Use this for initialization
 	void Falling(){
 		transform.position += new Vector3 (0, -speedFalling * Time.deltaTime, 0);		
@@ -14,36 +15,39 @@ public class Gift : MonoBehaviour {
 	void OnTheGround(){
 		
 	}
-	void OnCollisionEnter (Collision col) {
-		if (col.collider.gameObject.tag == "AI") {
+	void OnTriggerEnter (Collider col) {
+		if (col.GetComponent<Collider>().gameObject.layer == 9) {
 			switch (_pow) {
 			case Power.FENCE:
 				PowerManager.instance.FenceUp ();
-				Destroy (this);
+				Instantiate (FX, transform.position+ Vector3.up, Quaternion.identity);
+				Destroy (this.gameObject);
 				break;
 			case Power.LIFE:
 				PowerManager.instance.LifePower();
-				Destroy (this);
+				Instantiate (FX, transform.position+ Vector3.up, Quaternion.identity);
+				Destroy (this.gameObject);
 				break;
 			case Power.GPS:
 				PowerManager.instance.GPSPower ();
-				Destroy (this);
+				Instantiate (FX, transform.position+ Vector3.up, Quaternion.identity);
+				Destroy (this.gameObject);
 				break;
 			case Power.REVERSE:
 				PowerManager.instance.ReversePower ();
-				Destroy (this);
+				Instantiate (FX, transform.position+ Vector3.up, Quaternion.identity);
+				Destroy (this.gameObject);
 				break;
 			}
 		}
 	}
 	void Start () {
 		iTween.ScaleTo(gameObject, 
-			iTween.Hash( 
+			iTween.Hash(
 				"scale", new Vector3(1.2f,1.2f,1.2f),  
 				"time", speedBeating, 
 				"easeType",iTween.EaseType.linear,
 				"loopType", iTween.LoopType.pingPong));
-//		debugText.text = (string)_pow;
 	}
 	
 	// Update is called once per frame
@@ -53,6 +57,6 @@ public class Gift : MonoBehaviour {
 		} else {
 			OnTheGround ();
 		}
+				debugText.text = _pow.ToString();
 	}
 }
-
