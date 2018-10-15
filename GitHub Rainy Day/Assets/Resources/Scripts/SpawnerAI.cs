@@ -6,17 +6,16 @@ using Lean.Pool;
 public class SpawnerAI : MonoBehaviour {
 	public Color _currentColor;
 	public GameObject AI;
+	public float spawnerTime;
 	// Use this for initialization
 	IEnumerator Start () {
 
 		while (true) {
-			Vector3 pos = new Vector3 (Random.Range(0,5),1,Random.Range(0,5));
-//			Vector3 pos = new Vector3(0,3,0);
+			Vector3 pos = new Vector3 (Random.Range(0,5),1.5f,Random.Range(0,5));
 			GameObject ai = (GameObject)Instantiate(AI,pos,Quaternion.identity);
 			AI a = ai.GetComponent<AI> ();
 			a.movement.GoToRandDirection ();
-//			SetColor ();
-			yield return new WaitForSeconds (Random.Range(1,2));
+			yield return new WaitForSeconds (spawnerTime);
 		}
 
 	}

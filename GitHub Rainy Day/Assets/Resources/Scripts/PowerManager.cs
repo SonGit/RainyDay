@@ -9,7 +9,7 @@ public enum Power{
 }
 public class PowerManager : MonoBehaviour {
 //	private AI ai;
-	FenceManager fen;
+	public FenceManager fen;
 	private float countFence;
 	public float FenceCD;
 	public static PowerManager instance;
@@ -25,12 +25,6 @@ public class PowerManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-//		if (countFence > 0) {
-//			countFence -= Time.deltaTime;
-//		}
-//		if (countFence == 0) {
-//			FenceDown ();
-//		}
 	}
 
 	public void FenceUp() {
@@ -38,7 +32,7 @@ public class PowerManager : MonoBehaviour {
 		countFence = FenceCD;
 	}
 	public void LifePower() {
-	
+		print("Life Up");
 	}
 	public void GPSPower()
 	{

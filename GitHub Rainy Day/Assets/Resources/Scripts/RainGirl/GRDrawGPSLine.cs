@@ -5,31 +5,43 @@ using geniikw.DataRenderer2D;
 
 public class GRDrawGPSLine : MonoBehaviour {
 	[SerializeField]
-	LineRenderer lineRenderer;
-	[SerializeField]
-	LineRenderer lineRendererToAI;
+	WorldLine worldLine;
 
 	// Use this for initialization
 	void Start () {
-		
+		worldLine = this.GetComponent<WorldLine> ();
+		worldLine.MakeNewMesh ();
+		transform.position = new Vector3 (0,.25f,0);
 	}
 
-	public void DrawPath(Vector3[] nodes, Vector3 AIpos)
+	public void DrawPath(List<Vector3> nodes,Transform org)
 	{
-		lineRenderer.SetPositions(nodes);
+		worldLine = this.GetComponent<WorldLine> ();
 
-		for (int i = 1; i < nodes.Length; i++) {
-			lineRenderer.SetPosition (i,nodes[i]);
+		this.org = org;
+	
+		worldLine.line.Clear ();
+
+		foreach (Vector3 node in nodes) {
+			worldLine.line.Push (node,Vector3.zero,Vector3.zero,.05f);
 		}
-
-		lineRendererToAI.SetPosition (0,lineRenderer.GetPosition(0));
-		lineRendererToAI.SetPosition (1,AIpos);
 	}
 
 	void Update()
 	{
-		
-	}
-		
+		if (first && org != null) {
+			worldLine.line.EditPoint (0,new Vector3(Mathf.Round(org.position.x),Mathf.Round(org.position.y),Mathf.Round(org.position.z)),0.05f);
+		}
 
+	}
+
+	bool first;
+	Transform org;
+
+	public void PopANode(List<Vector3> nodes)
+	{
+		if(first)
+		worldLine.line.PopFirst ();	
+		first = true;
+	}
 }

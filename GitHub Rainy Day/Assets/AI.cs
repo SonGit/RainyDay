@@ -10,7 +10,8 @@ public enum GirlType
 	YELLOW,
 }
 public class AI : MonoBehaviour {
-	
+	public Transform Spawn_FX;
+	public float speedscale;
 	[SerializeField]
 	private float hitTime = 3;
 	[SerializeField]
@@ -35,7 +36,7 @@ public class AI : MonoBehaviour {
 	public Animator Anim;
 	// Use this for initialization
 	public RGMovementController movement;
-
+	public GameObject FX;
 	public TextMeshPro debugText;
 
 	public enum RGState
@@ -61,7 +62,7 @@ public class AI : MonoBehaviour {
 
 	Collider collider;
 
-	bool isDead;
+	public bool isDead;
 
 	void Awake () {
 
@@ -69,7 +70,7 @@ public class AI : MonoBehaviour {
 
 		currentState = RGState.START;
 
-		Anim.SetTrigger ("Idle");
+
 
 		TurnOffAllArrow ();
 
@@ -83,15 +84,25 @@ public class AI : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+
+		PlayAnim(currentState);
+
+		
+		if(currentState == RGState.FELL){
+			if (transform.position.y > -10f) {
+				transform.position += movement.mesh.forward *Time.deltaTime*0.4f;
+			}
+		}
 		if (isDead)
 			return;
-
 		if(currentState == RGState.FALLING){
 			
 			fallTimeCount += Time.deltaTime;
 
 			if (fallTimeCount > fallTime) {
+				
 				Fell ();
+
 				fallTimeCount = 0;
 			}
 		}
@@ -126,7 +137,7 @@ public class AI : MonoBehaviour {
 			debugText.text = "Falling!";
 
 			if (transform.position.y > 0) {
-				transform.position += new Vector3 (0, -.5f * Time.deltaTime, 0);
+				transform.position += new Vector3 (0, -Time.deltaTime, 0);
 			} else {
 				collider.enabled = true;
 				Walk ();
@@ -182,8 +193,11 @@ public class AI : MonoBehaviour {
 				Walk ();
 			}
 		}
-			
-		RaycastForward ();
+
+		if (currentState != RGState.DIZZY_ANIM) {
+			RaycastForward ();
+		}
+
 	}
 
 	void Fell()
@@ -201,8 +215,7 @@ public class AI : MonoBehaviour {
 
 		if (currentState != RGState.DIZZY_ANIM ) {
 			currentState = RGState.DIZZY_ANIM;
-			Anim.ResetTrigger ("Walk");
-			Anim.SetTrigger ("Dizzy");
+
 		}
 		else 
 		{
@@ -215,7 +228,7 @@ public class AI : MonoBehaviour {
 
 	public bool raycasting = true;
 
-	bool RaycastForward()
+	bool RaycastForward ()
 	{
 		Vector3 raycastDir = Vector3.zero;
 
@@ -243,7 +256,7 @@ public class AI : MonoBehaviour {
 		// Does the ray intersect any objects excluding the player layer
 		if (Physics.Raycast(transform.position + new Vector3(0,1,0), raycastDir, out hit, Mathf.Infinity,layer_mask))
 		{
-		//	Debug.Log(transform.name + " Did Hit " + hit.transform.name + " hit.distance " + hit.distance);
+//			Debug.Log(transform.name + " Did Hit " + hit.transform.name + " hit.distance " + hit.distance);
 
 //			float distanceToHit = Vector3.Distance (transform.position,hit.transform.position);
 
@@ -267,15 +280,23 @@ public class AI : MonoBehaviour {
 				// If hit fence, push it down
 				if (fence != null) {
 					fence.PopDown ();
+					OnHit ();
 					fence.isPopDown = true;
 				}
 
 				//Check if out-of-bounds
 				if (hit.transform.gameObject.layer == LayerMask.NameToLayer ("Wall")) {
 					Falling ();
-				} 
+				}
 			} 
-
+			else {
+				if (hit.transform.gameObject.layer == LayerMask.NameToLayer ("Wall")) {
+					if (currentState == RGState.FALLING) {
+						Walk ();
+					}
+				}
+			}
+				
 			return true;
 		}
 
@@ -312,8 +333,7 @@ public class AI : MonoBehaviour {
 	{
 
 		if (currentState != RGState.HIT) {
-			Anim.ResetTrigger ("Walk");
-			Anim.SetTrigger ("Stun");
+			
 			currentState = RGState.HIT;
 		}
 		else 
@@ -340,7 +360,7 @@ public class AI : MonoBehaviour {
 	{
 		debugText.text = "Walk Back!";
 		Anim.ResetTrigger ("Stun");
-		Anim.SetTrigger ("Walk");
+		Anim.ResetTrigger ("Dizzy");
 		movement.Reverse ();
 		movement.Run ();
 		currentState = RGState.WALK;
@@ -348,8 +368,6 @@ public class AI : MonoBehaviour {
 
 	void Walk()
 	{
-		Anim.ResetTrigger ("Idle");
-		Anim.SetTrigger ("Walk");
 		debugText.text = "Walk!";
 		currentState = RGState.WALK;
 		movement.Run ();
@@ -363,18 +381,16 @@ public class AI : MonoBehaviour {
 		} else {
 			currentState = RGState.FALLING;
 		}
-		print ("FALLING");
 
 		movement.Stop();
-		Anim.ResetTrigger ("Walk");
-		Anim.ResetTrigger ("Dizzy");
-		Anim.SetTrigger ("StepFall");
+
 	}
 
 	void StopFalling()
 	{
 		currentState = RGState.WALK;
 	}
+		
 
 	public void TurnOffAllArrow()
 	{
@@ -389,5 +405,58 @@ public class AI : MonoBehaviour {
 			arrow.gameObject.SetActive (arrow.direction == direction);
 		}
 	}
-
+	public void PlayAnim(RGState _currentState) {
+		switch (_currentState) {
+		case RGState.DIZZY:
+			Anim.ResetTrigger ("Walk");
+			Anim.ResetTrigger ("Idle");
+			Anim.ResetTrigger ("Dizzy_Anim");
+			Anim.SetTrigger ("Dizzy");
+			break;
+		case RGState.DIZZY_ANIM:
+			Anim.ResetTrigger ("Walk");
+			Anim.ResetTrigger ("StepFall");
+			Anim.SetTrigger ("Dizzy_Anim");
+			break;
+		case RGState.FALLING:
+			Anim.ResetTrigger ("Walk");
+			Anim.ResetTrigger ("Dizzy");
+			Anim.SetTrigger ("StepFall");
+			break;
+		case RGState.FELL:
+			Anim.ResetTrigger ("StepFall");
+			Anim.SetTrigger ("Fall");
+			break;
+		case RGState.HIT:
+			Anim.ResetTrigger ("Walk");
+			Anim.SetTrigger ("Stun");
+			break;
+		case RGState.START:
+			Anim.SetTrigger ("Idle");
+			break;
+		case RGState.WAIT:
+			Anim.SetTrigger ("Idle");
+			break;
+		case RGState.WALK:
+			Anim.ResetTrigger ("Stun");
+			Anim.ResetTrigger ("Idle");
+			Anim.ResetTrigger ("Dizzy");
+			Anim.ResetTrigger ("StepFall");
+			Anim.SetTrigger ("Walk");
+			break;
+		}
+	}
+	public void EndFall(){
+			SkinnedMeshRenderer mesh = this.GetComponentInChildren<SkinnedMeshRenderer> ();
+			mesh.gameObject.SetActive (false);
+		GameObject _death = (GameObject)Instantiate (FX, Spawn_FX.position+ new Vector3(0,-0.5f,0), Quaternion.Euler (new Vector3 (90, 0, 0)));
+	}
+	public void ScaleSize(){
+		iTween.ScaleTo(gameObject, 
+			iTween.Hash(
+				"scale", new Vector3(0.5f,0.5f,0.5f),  
+				"time", 0.5f, 
+				"easeType",iTween.EaseType.linear));
+	}
 }
+	
