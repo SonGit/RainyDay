@@ -47,7 +47,8 @@ public class AI : MonoBehaviour {
 		DIZZY,
 		START,
 		FALLING,
-		FELL
+		FELL,
+		GPS
 	}
 
 	public RGState currentState;
@@ -252,7 +253,7 @@ public class AI : MonoBehaviour {
 				if (hit.transform.gameObject.layer == LayerMask.NameToLayer ("AI")) {
 					
 					// if the AI is not follow any path, play normal hit
-					if (!movement.pathfinding) {
+					if (currentState != RGState.GPS) {
 						OnHit ();
 					}
 					// else, just wait
@@ -282,6 +283,14 @@ public class AI : MonoBehaviour {
 			Walk ();
 		}
 		return false;
+	}
+
+	public void GPS(Vector3 position)
+	{
+		currentState = RGState.GPS;
+		movement.Run ();
+		movement.FollowPath (position);
+		ResetTimer ();
 	}
 
 	void Wait()

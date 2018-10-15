@@ -58,8 +58,8 @@ public class RGPlayerInput : MonoBehaviour {
 
 				if (chosenAI != null) {
 
-					if (chosenAI.movement.pathfinding)
-						return;
+					//if (chosenAI.movement.pathfinding)
+						//return;
 
 					if (!CheckValidState (chosenAI.currentState))
 						return;
@@ -80,16 +80,16 @@ public class RGPlayerInput : MonoBehaviour {
 
 						float distance = Vector3.Distance (hit.point,closest.position);
 						// If the AI is within distance, select it
-						if (distance < .7f) {
+						if (distance < .8f) {
 
 //							print ("You choose  "+closest.name +" distance "+ distance);
 
 							chosenAI = closest.GetComponent<AI> ();
 
 							if (chosenAI != null) {
-								
-								if (chosenAI.movement.pathfinding)
-									return;
+								//
+								//if (chosenAI.movement.pathfinding)
+									//return;
 
 								if (!CheckValidState (chosenAI.currentState))
 									return;
@@ -108,8 +108,6 @@ public class RGPlayerInput : MonoBehaviour {
 			if (chosen) {
 
 				float dist = Vector3.Distance (hit.point,chosenAI.transform.position);
-
-
 
 				// Find the direction to move in
 				dir = hit.point - chosenAI.transform.position;

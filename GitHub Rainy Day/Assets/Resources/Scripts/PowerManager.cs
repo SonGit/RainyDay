@@ -60,8 +60,7 @@ public class PowerManager : MonoBehaviour {
 						if (rainGirl.type == homeScript.hometype && 
 							rainGirl.ai.currentState != AI.RGState.START && 
 							rainGirl.ai.currentState != AI.RGState.WAIT && 
-							!rainGirl.ai.movement.pathfinding	)
-
+							rainGirl.ai.currentState != AI.RGState.GPS	)
 							{
 							
 							rainGirl.FollowPathHome (homeScript.exitPoint.position);

@@ -15,7 +15,6 @@ public enum Direction
 
 public class RGMovementController : MonoBehaviour {
 
-
 	[SerializeField]
 	public Transform mesh;
 
@@ -29,23 +28,17 @@ public class RGMovementController : MonoBehaviour {
 	private Vector3 targetTile;
 	public Vector3 targetEulerAngle;
 	private float tileNo;
-	private int startDir;
-
 
 	// Pathfinding stuffs
 	private Seeker seeker;
 	Vector3 currentWaypoint;
 	int currentWaypointNo;
 	Path path;
-	public bool pathfinding;
+
 	public List<Vector3> remainingPath;
 
 	[SerializeField]
 	private Vector3 currentTile;
-	[SerializeField]
-	private GameObject gpsLinePrefab;
-
-	private GRDrawGPSLine gpsDrawLine;
 
 	// Set this to false to manually rotate mesh
 	public bool rotateToTarget = true;
@@ -63,164 +56,97 @@ public class RGMovementController : MonoBehaviour {
 
 		case Direction.UP:
 			targetTile = currentTile + new Vector3 (0, 0, tileNo);
-			changedDir = true;
-			direction = Direction.UP;
 			break;
 		case Direction.DOWN:
 			targetTile = currentTile + new Vector3 (0, 0, -tileNo);
-			changedDir = true;
-			direction = Direction.DOWN;
 			break;
 		case Direction.LEFT:
 			targetTile = currentTile + new Vector3 (-tileNo, 0, 0);
-			changedDir = true;
-			direction = Direction.LEFT;
 			break;
 		case Direction.RIGHT:
 			targetTile = currentTile + new Vector3 (tileNo, 0, 0);
-			changedDir = true;
-			direction = Direction.RIGHT;
 			break;
 		}
 
+		GoTo (targetTile);
 	}
 
-
-
-	void Move () {
-
-		if (changedDir) {
-			float distanceToTargetTile = Vector3.Distance (transform.position, targetTile);
-
-			if (distanceToTargetTile <= 0) {
-				changedDir = false;
-
-				if (ai.currentState == AI.RGState.DIZZY) {
-					GoToRandDirection ();
-				}
-
-			} else {
-				transform.position = Vector3.MoveTowards (transform.position, targetTile, speed * Time.deltaTime);
-			}
-
-		} else {
-			if (direction == Direction.UP) {
-				transform.position += new Vector3 (0, 0, 1) * Time.deltaTime * speed;
-			}
-			if (direction == Direction.DOWN) {
-				transform.position += new Vector3 (0, 0, -1) * Time.deltaTime * speed;
-			}
-			if (direction == Direction.LEFT) {
-				transform.position += new Vector3 (-1, 0, 0) * Time.deltaTime * speed;
-			}
-			if (direction == Direction.RIGHT) {
-				transform.position += new Vector3 (1, 0, 0) * Time.deltaTime * speed;
-			}
-		}
-
-		if (direction == Direction.UP) {
-			targetEulerAngle = new Vector3 (0, 0, 0);
-		}
-		if (direction == Direction.DOWN) {
-			targetEulerAngle = new Vector3 (0, 180, 0);
-		}
-		if (direction == Direction.LEFT) {
-			targetEulerAngle = new Vector3 (0, -90, 0);
-		}
-		if (direction == Direction.RIGHT) {
-			targetEulerAngle = new Vector3 (0, 90, 0);
-		}
-
-		if (rotateToTarget && mesh != null) {
-			mesh.localRotation = Quaternion.Slerp (mesh.localRotation, Quaternion.Euler (targetEulerAngle), Time.deltaTime * rotSpeed);
-		}
-		else {
-
-		}
-	}
 		
 	void Start () {
 		
 		targetTile = new Vector3 (Mathf.Round(transform.position.x),0,Mathf.Round(transform.position.z));
 		targetEulerAngle = new Vector3 (0,0,0);
-		tileNo = 1;
-		currentTile = new Vector3 (Mathf.Round (transform.position.x), 0, Mathf.Round (transform.position.z));
+		currentTile = targetTile;
+		tileNo = 10;
+
 		seeker = this.GetComponent<Seeker> ();
 		ai = this.GetComponent<AI> ();
 
+		GoToDirection (direction);
 	}
+
 	// Update is called once per frame
 	void Update () {
 		
-		currentTile = new Vector3 (Mathf.Round (transform.position.x), 0, Mathf.Round (transform.position.z));
+			currentTile = new Vector3 (Mathf.Round (transform.position.x), 0, Mathf.Round (transform.position.z));
 
-			if (!pathfinding) {
-				Move ();
-			} else {
-			speed = 2;
-				if (Vector3.Distance (transform.position, currentWaypoint) > 0.01f) {
+			if (Vector3.Distance (transform.position, currentWaypoint) > 0.01f) {
 					
-					transform.position = Vector3.MoveTowards (transform.position, currentWaypoint, Time.deltaTime * speed);
+				transform.position = Vector3.MoveTowards (transform.position, currentWaypoint, Time.deltaTime * speed);
 
-					Vector3 dir = (currentWaypoint - transform.position).normalized;
-					dir = new Vector3 (Mathf.Round (dir.x), 0, Mathf.Round (dir.z));
+				Vector3 dir = (currentWaypoint - transform.position).normalized;
+				dir = new Vector3 (Mathf.Round (dir.x), 0, Mathf.Round (dir.z));
 
-					if (dir.z > 0 ) {
-						direction = Direction.UP;
-					}
+				if (dir.z > 0 ) {
+					direction = Direction.UP;
+				}
 
-					if (dir.z < 0 ) {
-						direction = Direction.DOWN;
-					}
+				if (dir.z < 0 ) {
+					direction = Direction.DOWN;
+				}
 
-					if (dir.x < 0 ) {
-						direction = Direction.LEFT;
-					}
+				if (dir.x < 0 ) {
+					direction = Direction.LEFT;
+				}
 
-					if (dir.x > 0 ) {
-						direction = Direction.RIGHT;
-					}
+				if (dir.x > 0 ) {
+					direction = Direction.RIGHT;
+				}
 
-					var rotation = Quaternion.LookRotation(currentWaypoint - transform.position);
-					mesh.localRotation = Quaternion.Slerp(mesh.localRotation, rotation, Time.deltaTime * rotSpeed);
+			if (rotateToTarget) {
+				//var rotation = Quaternion.LookRotation(currentWaypoint - transform.position);
+				//mesh.localRotation = Quaternion.Slerp(mesh.localRotation, rotation, Time.deltaTime * rotSpeed);
+				mesh.localRotation = Quaternion.Lerp(mesh.localRotation, Quaternion.LookRotation((currentWaypoint - transform.position)), Time.deltaTime * rotSpeed);
+			}
 
 				} else {
 
-					currentWaypointNo++;
+				currentWaypointNo++;
 
-					if (currentWaypointNo >= path.vectorPath.Count) 
-					{
-						pathfinding = false;
+				if (currentWaypointNo >= path.vectorPath.Count) 
+				{
+					if(ai.currentState == AI.RGState.GPS)
 						OnArrivedHome ();
-					} 
-					else 
-					{
-						currentWaypoint = path.vectorPath[currentWaypointNo];
-
-
-						if(gpsDrawLine != null)
-							gpsDrawLine.PopANode (remainingPath);
-					}
-			
-					remainingPath.Clear ();
-
-					for (int i = currentWaypointNo - 1; i < path.vectorPath.Count ; i++) {
-						remainingPath.Add (path.vectorPath[i]);
-					}
-						
+				} 
+				else 
+				{
+					currentWaypoint = path.vectorPath[currentWaypointNo];
 				}
+				
+				remainingPath.Clear ();
 
-				remainingPath [0] = transform.position;
+				for (int i = currentWaypointNo - 1; i < path.vectorPath.Count ; i++) {
+					remainingPath.Add (path.vectorPath[i]);
+				}
+						
 			}
-		
 
-	
+			if(remainingPath.Count > 0)
+					remainingPath [0] = transform.position;
 	}
 
 	void OnArrivedHome()
 	{
-		if (gpsDrawLine != null)
-			Destroy (gpsDrawLine.gameObject);
 		Destroy (gameObject);
 	}
 		
@@ -240,29 +166,32 @@ public class RGMovementController : MonoBehaviour {
 
 		case Direction.DOWN:
 			targetTile = currentTile + new Vector3 (0, 0, tileNo);
-			changedDir = true;
-			direction = Direction.UP;
 			break;
 		case Direction.UP:
 			targetTile = currentTile + new Vector3 (0, 0, -tileNo);
-			changedDir = true;
-			direction = Direction.DOWN;
 			break;
 		case Direction.RIGHT:
 			targetTile = currentTile + new Vector3 (-tileNo, 0, 0);
-			changedDir = true;
-			direction = Direction.LEFT;
 			break;
 		case Direction.LEFT:
 			targetTile = currentTile + new Vector3 (tileNo, 0, 0);
-			changedDir = true;
-			direction = Direction.RIGHT;
 			break;
 		}
+
+		GoTo (targetTile);
 	}
 		
+	void GoTo(Vector3 target)
+	{
+		// Graph without pathfinding
+		seeker.graphMask = 2;
+		seeker.StartPath(transform.position, target, OnPathComplete);
+	}
+
 	public void FollowPath(Vector3 target)
 	{
+		// Graph with pathfinding
+		seeker.graphMask = 1;
 		seeker.StartPath(transform.position, target, OnPathComplete);
 	}
 
@@ -273,15 +202,14 @@ public class RGMovementController : MonoBehaviour {
 			path = p;
 			currentWaypoint = transform.position;
 			currentWaypointNo = 0;
-			pathfinding = true;
 
 			remainingPath = new List<Vector3>(p.vectorPath);
 
-			GameObject lineGameObject = (GameObject)Instantiate (gpsLinePrefab, Vector3.zero, gpsLinePrefab.transform.rotation);
-			gpsDrawLine = lineGameObject.GetComponent<GRDrawGPSLine> ();
+		//	GameObject lineGameObject = (GameObject)Instantiate (gpsLinePrefab, Vector3.zero, gpsLinePrefab.transform.rotation);
+		//	gpsDrawLine = lineGameObject.GetComponent<GRDrawGPSLine> ();
 
-			if(gpsDrawLine != null)
-				gpsDrawLine.DrawPath (remainingPath,transform);
+		//	if(gpsDrawLine != null)
+			//	gpsDrawLine.DrawPath (remainingPath,transform);
 
 		} else {
 			Debug.Log ("No Path!");

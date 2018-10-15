@@ -26,7 +26,7 @@ public class RainGirl : MonoBehaviour {
 	{
 		ai.Anim.ResetTrigger ("Stun");
 		ai.Anim.SetTrigger ("GPS");
-		ai.movement.FollowPath (target);
+		ai.GPS (target);
 	}
 
 	void RandomGirlType()
