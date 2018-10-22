@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 400004}
   - component: {fileID: 19800004}
   - component: {fileID: 19900004}
-  - component: {fileID: 11400002}
+  - component: {fileID: 114936102385687504}
   m_Layer: 0
   m_Name: Hit
   m_TagString: FxTemporaire
@@ -93,18 +93,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &11400002
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100004}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6fd2e8874f60266498a388d7229a1bac, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  OnlyDeactivate: 0
 --- !u!198 &19800000
 ParticleSystem:
   m_ObjectHideFlags: 1
@@ -4905,7 +4893,7 @@ ParticleSystem:
         m_RotationOrder: 4
     startSizeY:
       serializedVersion: 2
-      minMaxState: 0
+      minMaxState: 3
       scalar: 1
       minScalar: 1
       maxCurve:
@@ -4958,7 +4946,7 @@ ParticleSystem:
         m_RotationOrder: 4
     startSizeZ:
       serializedVersion: 2
-      minMaxState: 0
+      minMaxState: 3
       scalar: 1
       minScalar: 1
       maxCurve:
@@ -13769,3 +13757,14 @@ Prefab:
   m_SourcePrefab: {fileID: 0}
   m_RootGameObject: {fileID: 100004}
   m_IsPrefabAsset: 1
+--- !u!114 &114936102385687504
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100004}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c501daa4a52c66b4fab16178f47a3a6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

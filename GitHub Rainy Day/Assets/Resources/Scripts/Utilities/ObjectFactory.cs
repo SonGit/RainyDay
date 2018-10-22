@@ -17,12 +17,14 @@ public class ObjectFactory: MonoBehaviour {
 		None,
 
 		// Effect
-		HitNumber,
-		TextHitRandom,
-		DeathSkull,
-		StunEffect,
-		SmokeEffect,
-		Explosion,
+		WaterSplash,
+		HitFX,
+		GiftFX,
+		LifeFX,
+		HeartFX,
+		GpsFX,
+		StunFX,
+		DizzyFX,
 
 		// Audio
 		AudioSource,
@@ -46,13 +48,13 @@ public class ObjectFactory: MonoBehaviour {
 		{ PrefabType.None, "" },
 
 		// Effect
-		{ PrefabType.HitNumber, "Prefabs/HitNumber" },
-		{ PrefabType.TextHitRandom, "Prefabs/TextHitRandom" },
-		{ PrefabType.DeathSkull, "Prefabs/DeathSkull" },
-		{ PrefabType.StunEffect, "Prefabs/StunEffect" },
-		{ PrefabType.SmokeEffect, "Prefabs/SmokeEffect" },
-		{ PrefabType.Explosion, "Prefabs/Explosion" },
-
+		{ PrefabType.WaterSplash, "Prefabs/FX/Water_Splash" },
+		{ PrefabType.HitFX, "Prefabs/FX/Hit" },
+		{ PrefabType.GiftFX, "Prefabs/FX/GiftExplosive" },
+		{ PrefabType.HeartFX, "Prefabs/FX/Heart" },
+		{ PrefabType.GpsFX, "Prefabs/FX/gpsFX" },
+		{ PrefabType.StunFX, "Prefabs/FX/StunFX" },
+		{ PrefabType.DizzyFX, "Prefabs/FX/DizzyFX" },
 		// Audio
 		{ PrefabType.AudioSource, "Prefabs/AudioSource" },
 

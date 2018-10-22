@@ -6,7 +6,6 @@ public class SharkJump : MonoBehaviour {
 
     private Rigidbody rb;
 	private Rigidbody rb1;
-	public GameObject FX;
 	public Vector3 target;
 	public Vector3 nextPos;
 	public Vector3 left;
@@ -15,17 +14,43 @@ public class SharkJump : MonoBehaviour {
 	public float speed;
     public float h = 25;
     public float gravity = -18;
-
+	HitFX hitFX;
+	WaterFX waterFX;
 	public bool debugPath;
-
+	public Vector3 transFX;
 	public bool hasInit;
+	public float delay;
+	private AI ai;
 
-	 void OnCollisionEnter(Collision collision)
+	IEnumerator GetHitFX (Vector3 pos){
+		hitFX = ObjectPool.instance.GetHitFX ();
+		if (hitFX != null) {
+			hitFX.transform.position = pos;
+		}
+		yield return null;
+	}
+
+	IEnumerator GetWaterFX (Vector3 pos){
+		waterFX = ObjectPool.instance.GetWaterFX ();
+		if (waterFX != null) {
+			waterFX.transform.position = pos;
+		}
+		yield return null;
+	}
+
+	void OnTriggerEnter(Collider col)
 	{
-		print (collision.gameObject.name);
+		if (col.gameObject.layer == 9) {
+			
+			ai = col.gameObject.GetComponent<AI> ();
+			if(ai.currentState != AI.RGState.GPS) {
+				StartCoroutine(GetHitFX(col.transform.position + Vector3.up/2));
+				Destroy (col.gameObject);
+			}
+		}
 	}
 	public IEnumerator MoveToStart(){
-		rand = Random.Range (1, 9);
+		rand = Random.Range (5, 9);
 		if (rand < 5) {
 			transform.eulerAngles = new Vector3 (0, 90, 0);
 		}else transform.eulerAngles = new Vector3 (0,-90,0);
@@ -90,12 +115,12 @@ public class SharkJump : MonoBehaviour {
 	public IEnumerator test() {
 		rb1 = this.GetComponent<Rigidbody>();
 		while (true) {
-			yield return new WaitForSeconds (1);
+			yield return new WaitForSeconds (0.5f);
 			WorldStates.instance.isStartle = true;
 			StartCoroutine (MoveToStart ());
 			StartCoroutine (Ready ());
 			yield return new WaitForSeconds (2);
-			GameObject fx = (GameObject)Instantiate (FX, transform.position, Quaternion.Euler (new Vector3 (90, 0, 0)));
+			StartCoroutine (GetWaterFX (transform.position));
 			StartCoroutine(Jump ());
 			StartCoroutine(Launch (target));
 			yield return new WaitForSeconds (1);
@@ -106,10 +131,11 @@ public class SharkJump : MonoBehaviour {
 			StartCoroutine(Launch (target));
 			WorldStates.instance.isStartle = false;
 			yield return new WaitForSeconds (0.7f);
-			GameObject fx1 = (GameObject)Instantiate (FX, transform.position, Quaternion.Euler (new Vector3 (90, 0, 0)));
-			yield return new WaitForSeconds (2.5f);
+			StartCoroutine (GetWaterFX (transform.position));
+			yield return new WaitForSeconds (1f);
 			rb1.useGravity = false;
 			rb1.velocity = Vector3.zero;
+			yield return new WaitForSeconds (delay);
 		}
 	}
 

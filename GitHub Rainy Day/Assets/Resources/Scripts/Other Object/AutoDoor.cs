@@ -3,6 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class AutoDoor : MonoBehaviour {
+	public static AutoDoor instance;
+	void Awake()
+	{
+		if (instance == null)
+			instance = this;
+	}
 	public enum DoorID{
 		RED,
 		BLUE,
@@ -12,57 +18,45 @@ public class AutoDoor : MonoBehaviour {
 	private DoorID id;
 	[SerializeField]
 	private float speed;
-	[SerializeField]
-	private bool isOpen;
+
+	public bool isRay;
 	// Use this for initialization
-	void openDoor() {
-		if (!isOpen) {
+	public void openDoor() {
 			switch (id) {
 			case DoorID.BLUE:
-				if (transform.eulerAngles.y > 1) {
+			if (transform.localEulerAngles.y > 270) {
 					transform.Rotate (0, -Time.deltaTime * speed, 0);
 				} 
-				else isOpen = true;
 				break;
 			case DoorID.RED:
-				
-				if (transform.eulerAngles.y < 359) {
+				if (transform.eulerAngles.y < 358) {
 					transform.Rotate (0, Time.deltaTime * speed, 0);
 				}
-				else isOpen = true;
 				break;
 			case DoorID.YELLOW:
-				
-				if (transform.eulerAngles.y > 179) {
+				if (transform.eulerAngles.y > 189) {
 					transform.Rotate (0, -Time.deltaTime * speed, 0);
 				}
-				else isOpen = true;
 				break;
 			}
-		}
 	}
-	void closeDoor() {
-		if (isOpen) {
+	public void closeDoor() {
 			switch (id) {
 			case DoorID.BLUE:
-				if (transform.eulerAngles.y < 89) {
+			if (transform.localEulerAngles.y < 358) {
 					transform.Rotate (0, Time.deltaTime * speed, 0);
 				}
-				else isOpen = false;
 				break;
 			case DoorID.RED:
-				if (transform.eulerAngles.y > 271) {
+				if (transform.eulerAngles.y > 269) {
 					transform.Rotate (0, -Time.deltaTime * speed, 0);
 				}
-				else isOpen = false;
 				break;
 			case DoorID.YELLOW:
 				if (transform.eulerAngles.y < 271) {
 					transform.Rotate (0, Time.deltaTime * speed, 0);
 				}
-				else isOpen = false;
 				break;
-			}
 		}
 	}
 	void Start () {
@@ -71,9 +65,9 @@ public class AutoDoor : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (isOpen)
-			closeDoor ();
-		else
+		if (isRay)
 			openDoor ();
+		else
+			closeDoor ();
 	}
 }

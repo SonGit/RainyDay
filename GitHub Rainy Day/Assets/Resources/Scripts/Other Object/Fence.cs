@@ -15,11 +15,17 @@ public class Fence : MonoBehaviour {
 		RIGHT
 	}
 	public Direction direction;
+
+	private Vector3 orgRot;
 	// Use this for initialization
 	void Start () {
-
+		orgRot = transform.localEulerAngles;
 	}
 
+	void ResetRot()
+	{
+		transform.localEulerAngles = orgRot;
+	}
 
 	// Update is called once per frame
 	void Update () {
@@ -28,79 +34,111 @@ public class Fence : MonoBehaviour {
 
 	public void PopUp()
 	{
-		//StopAllCoroutines ();
+		StopAllCoroutines ();
 		if (isPopDown) {
+
+
 			switch (direction) {
 			case Direction.UP:
+				transform.localEulerAngles = new Vector3 (90, 0, 0);
 				iTween.RotateTo (this.gameObject, iTween.Hash (
-					"x", this.gameObject.transform.eulerAngles.x + 180,
+					"x", -90,
 					"time", popTime,
-					"easetype", iTween.EaseType.spring));
-				isPopDown = false;
+					"easetype", iTween.EaseType.spring,
+					"oncomplete","OnCompletePopUp",
+					"oncompletetarget",gameObject,
+				    "islocal",true));
+
 				break;
 			case Direction.DOWN:
+				transform.localEulerAngles = new Vector3 (90, 0, 0);
 				iTween.RotateTo (this.gameObject, iTween.Hash (
-					"x", this.gameObject.transform.eulerAngles.x - 180,
+					"x", 270,
 					"time", popTime,
-					"easetype", iTween.EaseType.spring));
-				isPopDown = false;
+					"easetype", iTween.EaseType.spring,
+					"oncomplete","OnCompletePopUp",
+					"oncompletetarget",gameObject,
+					"islocal",true));
+
 				break;
 			case Direction.LEFT:
-				transform.eulerAngles = new Vector3 (-180, -90, 0);
+				transform.localEulerAngles = new Vector3 (-180, 90, 90);
 				iTween.RotateTo (this.gameObject, iTween.Hash (
-					"x", this.gameObject.transform.eulerAngles.x - 180,
+					"y", transform.localEulerAngles.y - 180,
 					"time", popTime,
-					"easetype", iTween.EaseType.spring));
-				isPopDown = false;
+					"easetype", iTween.EaseType.spring,
+					"oncomplete","OnCompletePopUp",
+					"oncompletetarget",gameObject,
+					"islocal",true));
 				break;
 			case Direction.RIGHT:
-				transform.eulerAngles = new Vector3 (180, -90, 0);
+				transform.localEulerAngles = new Vector3 (180, 90, 90);
 				iTween.RotateTo (this.gameObject, iTween.Hash (
-					"x", this.gameObject.transform.eulerAngles.x + 180,
+					"y", transform.localEulerAngles.y + 180,
 					"time", popTime,
-					"easetype", iTween.EaseType.spring));
-				isPopDown = false;
+					"easetype", iTween.EaseType.spring,
+					"oncomplete","OnCompletePopUp",
+					"oncompletetarget",gameObject,
+					"islocal",true));
+
 				break;
 			}
 		}
 	}
 
+	void OnCompletePopUp()
+	{
+		isPopDown = false;
+	}
+
+	void OnCompletePopDown()
+	{
+		isPopDown = true;
+	}
+
 	public void PopDown()
 	{
-		//StopAllCoroutines ();
+		StopAllCoroutines ();
 		if (!isPopDown) {
+			
+			ResetRot ();
+
 			switch (direction) {
 			case Direction.UP:
-				transform.eulerAngles = new Vector3 (0, 0, 0);
 				iTween.RotateTo (this.gameObject, iTween.Hash (
 					"x", this.gameObject.transform.eulerAngles.x + 180,
 					"time", popTime,
-					"easetype", iTween.EaseType.spring));
-				isPopDown = true;
+					"easetype", iTween.EaseType.spring,
+					"oncomplete","OnCompletePopDown",
+					"oncompletetarget",gameObject));
+
 				break;
 			case Direction.DOWN:
-				transform.eulerAngles = new Vector3 (0, 0, 0);
 				iTween.RotateTo (this.gameObject, iTween.Hash (
 					"x", this.gameObject.transform.eulerAngles.x - 180,
 					"time", popTime,
-					"easetype", iTween.EaseType.spring));
-				isPopDown = true;
+					"easetype", iTween.EaseType.spring,
+					"oncomplete","OnCompletePopDown",
+					"oncompletetarget",gameObject));
+
 				break;
 			case Direction.LEFT:
-				transform.eulerAngles = new Vector3 (0, 90, 0);
 				iTween.RotateTo (this.gameObject, iTween.Hash (
 					"x", this.gameObject.transform.eulerAngles.x - 180,
 					"time", popTime,
-					"easetype", iTween.EaseType.spring));
-				isPopDown = true;
+					"easetype", iTween.EaseType.spring,
+					"oncomplete","OnCompletePopDown",
+					"oncompletetarget",gameObject));
+
 				break;
 			case Direction.RIGHT:
-				transform.eulerAngles = new Vector3 (0, 90, 0);
 				iTween.RotateTo (this.gameObject, iTween.Hash (
 					"x", this.gameObject.transform.eulerAngles.x + 180,
 					"time", popTime,
-					"easetype", iTween.EaseType.spring));
-				isPopDown = true;
+					"easetype", iTween.EaseType.spring,
+					"oncomplete","OnCompletePopDown",
+					"oncompletetarget",gameObject));
+
 				break;
 			}
 		}

@@ -16,14 +16,9 @@ public class FenceManager : MonoBehaviour {
 			Fences [i].PopDown();
 		}
 	}
-	IEnumerator Start () {
+	void Start () {
 		Fences = GetComponentsInChildren<Fence>();
-		while (false) {
-			PopAllDown ();
-			yield return new WaitForSeconds (2);
-			PopAllUp ();
-			yield return new WaitForSeconds (2);
-		}
+		PopAllDown ();
 	}
 	
 	// Update is called once per frame

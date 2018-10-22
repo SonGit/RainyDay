@@ -32,7 +32,6 @@ public class PowerManager : MonoBehaviour {
 		countFence = FenceCD;
 	}
 	public void LifePower() {
-		print("Life Up");
 	}
 	public void GPSPower()
 	{
@@ -56,7 +55,6 @@ public class PowerManager : MonoBehaviour {
 							rainGirl.ai.currentState != AI.RGState.WAIT && 
 							rainGirl.ai.currentState != AI.RGState.GPS	)
 							{
-							
 							rainGirl.FollowPathHome (homeScript.exitPoint.position);
 							}
 						}

@@ -7,7 +7,6 @@ public class Gift : MonoBehaviour {
 	public float speedBeating;
 	public Power _pow;
 	public TextMeshPro debugText;
-	public GameObject FX;
 	// Use this for initialization
 	void Falling(){
 		transform.position += new Vector3 (0, -speedFalling * Time.deltaTime, 0);		
@@ -16,31 +15,44 @@ public class Gift : MonoBehaviour {
 		
 	}
 	void OnTriggerEnter (Collider col) {
-		if (col.GetComponent<Collider>().gameObject.layer == 9) {
+		if (col.gameObject.layer == 9) {
 			switch (_pow) {
 			case Power.FENCE:
 				PowerManager.instance.FenceUp ();
-				Instantiate (FX, transform.position+ Vector3.up, Quaternion.identity);
-				Destroy (this.gameObject);
+				GetGiftFX ();
+				Destroy (gameObject);
 				break;
 			case Power.LIFE:
-				PowerManager.instance.LifePower();
-				Instantiate (FX, transform.position+ Vector3.up, Quaternion.identity);
-				Destroy (this.gameObject);
+				PowerManager.instance.LifePower ();
+				GetGiftFX ();
+				GetGiftFX ();
+				Destroy (gameObject);
 				break;
 			case Power.GPS:
 				PowerManager.instance.GPSPower ();
-				Instantiate (FX, transform.position+ Vector3.up, Quaternion.identity);
-				Destroy (this.gameObject);
+				GetGiftFX ();
+				Destroy (gameObject);
 				break;
 			case Power.REVERSE:
 				PowerManager.instance.ReversePower ();
-				Instantiate (FX, transform.position+ Vector3.up, Quaternion.identity);
-				Destroy (this.gameObject);
+				GetGiftFX ();
+				Destroy (gameObject);
 				break;
 			}
 		}
 	}
+	GiftFX giftFX;
+	void GetGiftFX (){
+		giftFX = ObjectPool.instance.GetGiftFX ();
+		giftFX.transform.position = this.transform.position+new Vector3(0,0.5f,0);
+	}
+
+	HeartFX heartFX;
+	void GetHeartFX(){
+		heartFX = ObjectPool.instance.GetHeartFX ();
+		heartFX.transform.position = this.transform.position+new Vector3(0,0.5f,0);
+	}
+
 	void Start () {
 		iTween.ScaleTo(gameObject, 
 			iTween.Hash(

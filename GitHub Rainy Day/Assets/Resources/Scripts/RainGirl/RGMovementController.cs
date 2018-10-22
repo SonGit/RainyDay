@@ -10,7 +10,8 @@ public enum Direction
 	UP,
 	DOWN,
 	LEFT,
-	RIGHT
+	RIGHT,
+	NONE
 }
 
 public class RGMovementController : MonoBehaviour {
@@ -25,7 +26,7 @@ public class RGMovementController : MonoBehaviour {
 
 	// Private movement vars
 	public bool changedDir;
-	private Vector3 targetTile;
+	public Vector3 targetTile;
 	public Vector3 targetEulerAngle;
 	private float tileNo;
 
@@ -35,7 +36,7 @@ public class RGMovementController : MonoBehaviour {
 	int currentWaypointNo;
 	Path path;
 
-	public List<Vector3> remainingPath;
+	//public List<Vector3> remainingPath;
 
 	[SerializeField]
 	private Vector3 currentTile;
@@ -68,9 +69,32 @@ public class RGMovementController : MonoBehaviour {
 			break;
 		}
 
+		direction = dir;
+
 		GoTo (targetTile);
 	}
+	public void GoReverse(Direction R)
+	{
+		switch (R) {
 
+		case Direction.DOWN:
+			targetTile = currentTile + new Vector3 (0, 0, tileNo);
+			break;
+		case Direction.UP:
+			targetTile = currentTile + new Vector3 (0, 0, -tileNo);
+			break;
+		case Direction.RIGHT:
+			targetTile = currentTile + new Vector3 (-tileNo, 0, 0);
+			break;
+		case Direction.LEFT:
+			targetTile = currentTile + new Vector3 (tileNo, 0, 0);
+			break;
+		}
+
+		direction = R;
+
+		GoTo (targetTile);
+	}
 		
 	void Start () {
 		
@@ -79,14 +103,22 @@ public class RGMovementController : MonoBehaviour {
 		currentTile = targetTile;
 		tileNo = 10;
 
+		GoToDirection (direction);
+		Run ();
+	}
+
+	void Awake()
+	{
 		seeker = this.GetComponent<Seeker> ();
 		ai = this.GetComponent<AI> ();
-
-		GoToDirection (direction);
 	}
 
 	// Update is called once per frame
 	void Update () {
+
+		if (ai.currentState == AI.RGState.START) {
+			return;
+		}
 		
 			currentTile = new Vector3 (Mathf.Round (transform.position.x), 0, Mathf.Round (transform.position.z));
 
@@ -114,12 +146,27 @@ public class RGMovementController : MonoBehaviour {
 				}
 
 			if (rotateToTarget) {
-				//var rotation = Quaternion.LookRotation(currentWaypoint - transform.position);
+				
+				Vector3 waypoint = new Vector3 (currentWaypoint.x, 0, currentWaypoint.z);
+				Vector3 currentPos = new Vector3 (transform.position.x, 0, transform.position.z);
+
+				if ((waypoint  - currentPos) != Vector3.zero) {
+					
+					var rotation = Quaternion.LookRotation(waypoint - currentPos);
+					mesh.localRotation = Quaternion.Lerp(mesh.localRotation, Quaternion.LookRotation((currentWaypoint - transform.position)), Time.deltaTime * rotSpeed);
+
+				}
+				//if (rotation.x >= 0)
 				//mesh.localRotation = Quaternion.Slerp(mesh.localRotation, rotation, Time.deltaTime * rotSpeed);
-				mesh.localRotation = Quaternion.Lerp(mesh.localRotation, Quaternion.LookRotation((currentWaypoint - transform.position)), Time.deltaTime * rotSpeed);
+
 			}
 
 				} else {
+
+
+//				if (ai.currentState == AI.RGState.DIZZY && currentWaypointNo == 1) {
+//						GoReverse (direction);
+//				}
 
 				currentWaypointNo++;
 
@@ -133,23 +180,32 @@ public class RGMovementController : MonoBehaviour {
 					currentWaypoint = path.vectorPath[currentWaypointNo];
 				}
 				
-				remainingPath.Clear ();
-
-				for (int i = currentWaypointNo - 1; i < path.vectorPath.Count ; i++) {
-					remainingPath.Add (path.vectorPath[i]);
+//				remainingPath.Clear ();
+//
+//				for (int i = currentWaypointNo - 1; i < path.vectorPath.Count ; i++) {
+//					remainingPath.Add (path.vectorPath[i]);
 				}
 						
 			}
 
-			if(remainingPath.Count > 0)
-					remainingPath [0] = transform.position;
-	}
+//		if (remainingPath.Count > 1) {
+//			remainingPath [0] = transform.position;
+//		
+//		}
+//	}
 
 	void OnArrivedHome()
 	{
-		Destroy (gameObject);
+		if (ai.gpsFX != null) {
+			ai.gpsFX.transform.SetParent(null);
+			Destroy (ai.gpsFX);
+		}
+		Destroy (gameObject,0.5f);
 	}
-		
+	public void GPS()
+	{
+		speed = 2;
+	}
 	public void Run()
 	{
 		speed = 1;
@@ -166,23 +222,28 @@ public class RGMovementController : MonoBehaviour {
 
 		case Direction.DOWN:
 			targetTile = currentTile + new Vector3 (0, 0, tileNo);
+			direction = Direction.UP;
 			break;
 		case Direction.UP:
 			targetTile = currentTile + new Vector3 (0, 0, -tileNo);
+			direction = Direction.DOWN;
 			break;
 		case Direction.RIGHT:
 			targetTile = currentTile + new Vector3 (-tileNo, 0, 0);
+			direction = Direction.RIGHT;
 			break;
 		case Direction.LEFT:
 			targetTile = currentTile + new Vector3 (tileNo, 0, 0);
+			direction = Direction.LEFT;
 			break;
 		}
 
 		GoTo (targetTile);
 	}
 		
-	void GoTo(Vector3 target)
+	public void GoTo(Vector3 target)
 	{
+		Run ();
 		// Graph without pathfinding
 		seeker.graphMask = 2;
 		seeker.StartPath(transform.position, target, OnPathComplete);
@@ -190,20 +251,22 @@ public class RGMovementController : MonoBehaviour {
 
 	public void FollowPath(Vector3 target)
 	{
+		//Run ();
 		// Graph with pathfinding
 		seeker.graphMask = 1;
 		seeker.StartPath(transform.position, target, OnPathComplete);
 	}
 
+
 	private void OnPathComplete (Path p) {
-		Debug.Log("Yay, we got a path back. Did it have an error? " + p.error);
+//		Debug.Log("Yay, we got a path back. Did it have an error? " + p.error);
 
 		if (!p.error) {
 			path = p;
 			currentWaypoint = transform.position;
 			currentWaypointNo = 0;
 
-			remainingPath = new List<Vector3>(p.vectorPath);
+		//	remainingPath = new List<Vector3>(p.vectorPath);
 
 		//	GameObject lineGameObject = (GameObject)Instantiate (gpsLinePrefab, Vector3.zero, gpsLinePrefab.transform.rotation);
 		//	gpsDrawLine = lineGameObject.GetComponent<GRDrawGPSLine> ();
@@ -217,4 +280,6 @@ public class RGMovementController : MonoBehaviour {
 
 
 	}
+
+
 }

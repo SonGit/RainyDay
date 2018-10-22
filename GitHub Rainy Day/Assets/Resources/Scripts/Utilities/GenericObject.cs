@@ -39,7 +39,7 @@ public class GenericObject <T> where T : Cacheable
 			if (!t._living)
 			{
 			// Spawn Position ???
-				//t.Live();
+				t.Live();
 			// Spawn Position ???
 				return t;
 			}

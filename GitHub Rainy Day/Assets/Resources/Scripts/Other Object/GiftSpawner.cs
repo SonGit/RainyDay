@@ -33,14 +33,13 @@ public class GiftSpawner : MonoBehaviour {
 
 	IEnumerator Start () {
 		while (true) {
+			yield return new WaitForSeconds (spawnTime);
 			pos = RandomPos ();
 			RandomPower ();
 			GameObject _gift = (GameObject)Instantiate(Gift,pos,Quaternion.identity);
 			Gift gift =  _gift.GetComponent<Gift> ();
 			gift._pow = _pow;
-			yield return new WaitForSeconds (destroyTime);
-			Destroy (_gift);
-			yield return new WaitForSeconds (spawnTime);
+			Destroy (_gift,destroyTime);
 		}
 
 	}

@@ -49,6 +49,7 @@ public class RGPlayerInput : MonoBehaviour {
 
 			if (Input.GetMouseButtonDown (0)) {
 				// Debug
+
 				cube.transform.position = hit.point;
 
 				// If raycast hit an AI, choose it
@@ -63,7 +64,6 @@ public class RGPlayerInput : MonoBehaviour {
 
 					if (!CheckValidState (chosenAI.currentState))
 						return;
-					
 					// set default direction
 					chosenAI.TurnOnArrow (chosenAI.movement.direction);
 					chosenDirection = chosenAI.movement.direction;
@@ -80,7 +80,7 @@ public class RGPlayerInput : MonoBehaviour {
 
 						float distance = Vector3.Distance (hit.point,closest.position);
 						// If the AI is within distance, select it
-						if (distance < .8f) {
+						if (distance < 1f) {
 
 //							print ("You choose  "+closest.name +" distance "+ distance);
 
@@ -107,6 +107,17 @@ public class RGPlayerInput : MonoBehaviour {
 
 			if (chosen) {
 
+				if (chosenAI == null) {
+					Reset ();
+					return;
+				}
+
+				// If the AI is playing hit animation, ignore
+				if (chosenAI.currentState == AI.RGState.HIT) {
+					Reset ();
+					return;
+				}
+
 				float dist = Vector3.Distance (hit.point,chosenAI.transform.position);
 
 				// Find the direction to move in
@@ -115,7 +126,7 @@ public class RGPlayerInput : MonoBehaviour {
 				// Make it so that its only in x and y axis
 				dir.y = 0; // No vertical movement
 
-				Debug.DrawLine (chosenAI.transform.position,chosenAI.transform.position + chosenAI.transform.forward * 2,Color.green);
+				//Debug.DrawLine (chosenAI.transform.position,chosenAI.transform.position + chosenAI.transform.forward * 2,Color.green);
 				Debug.DrawLine (chosenAI.transform.position,chosenAI.transform.position + dir * 2,Color.green);
 
 				if (dist > minDistanceToChoose) {
@@ -161,18 +172,24 @@ public class RGPlayerInput : MonoBehaviour {
 		if (Input.GetMouseButtonUp (0)) {
 
 			if (chosenAI != null) {
+				if (!CheckValidState (chosenAI.currentState))
+					return;
 				// If the AI is playing hit animation, ignore
 				if (chosenAI.currentState == AI.RGState.HIT) {
 					return;
 				}
-
-				chosenAI.movement.GoToDirection (chosenDirection);
-				chosenAI.TurnOffAllArrow ();
-				chosenAI = null;
-				chosen = false;
+				if (chosenAI.currentState == AI.RGState.DIZZY) {
+					chosenAI.ReverseDirection (chosenDirection);
+					Reset ();
+				} else {
+					chosenAI.WalkToDirection (chosenDirection);
+					Reset ();
+				}
 			}
 
 		}
+
+
 				
 	}
 
@@ -244,14 +261,22 @@ public class RGPlayerInput : MonoBehaviour {
 	bool CheckValidState(AI.RGState inputState)
 	{
 		
-		if (inputState == AI.RGState.DIZZY ||
+		if (
 		   inputState == AI.RGState.DIZZY_ANIM ||
 		   inputState == AI.RGState.HIT ||
 		   inputState == AI.RGState.START ||
 		   inputState == AI.RGState.WAIT ||
-		   inputState == AI.RGState.FELL) {
+		   inputState == AI.RGState.FELL ||
+		   inputState == AI.RGState.GPS) {
 			return false;
 		}
 		return true;
+	}
+
+	void Reset()
+	{
+		chosenAI.TurnOffAllArrow ();
+		chosenAI = null;
+		chosen = false;
 	}
 }
